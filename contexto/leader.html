@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Leaderboard - Syntax Light (Orange)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#F4A261",
+                        "secondary": "#264653",
+                        "accent": "#2A9D8F",
+                        "background-light": "#FAFAFA",
+                        "background-sidebar": "#264653",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend"],
+                        "sans": ["Noto Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-display bg-background-light text-[#264653];
+            }
+        }
+        .leaderboard-row:hover {
+            @apply bg-orange-50/50;
+        }
+    </style>
+</head>
+<body class="font-display">
+<div class="flex min-h-screen">
+<aside class="w-64 bg-background-sidebar flex flex-col h-screen sticky top-0 text-white/80 shadow-2xl z-20">
+<div class="p-6 flex flex-col h-full justify-between">
+<div class="flex flex-col gap-8">
+<div class="flex items-center gap-3">
+<div class="bg-primary size-10 rounded-lg flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined">code</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-white text-lg font-bold leading-none">Syntax</h1>
+<p class="text-white/50 text-xs font-normal">Learn Smarter</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-sm font-medium">Panel</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="text-sm font-medium">Ruta</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary text-white shadow-md shadow-primary/20" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">emoji_events</span>
+<span class="text-sm font-medium">Clasificación</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span class="text-sm font-medium">Práctica</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">rocket_launch</span>
+<span class="text-sm font-medium">Proyectos</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition-all mt-4" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Ajustes</span>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-2 border-t border-white/10 pt-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-sm font-medium">Centro de Ayuda</span>
+</a>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col overflow-y-auto">
+<header class="flex items-center justify-between bg-white/80 backdrop-blur-md px-8 py-4 sticky top-0 z-10 border-b border-gray-100">
+<div class="flex items-center gap-4 flex-1">
+<div class="flex items-center w-full max-w-md h-10 bg-gray-50 border border-gray-200 rounded-xl px-3 group focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+<span class="material-symbols-outlined text-gray-400 text-xl">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-gray-400" placeholder="Buscar usuarios..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium text-secondary hover:text-primary transition-colors" href="#">Cursos</a>
+<a class="text-sm font-medium text-secondary hover:text-primary transition-colors" href="#">Comunidad</a>
+</div>
+<button class="bg-primary text-white text-sm font-bold h-10 px-6 rounded-xl hover:brightness-110 transition-all shadow-lg shadow-primary/20">Pasar a Pro</button>
+<div class="h-10 w-10 rounded-full border-2 border-primary/20 bg-cover bg-center ring-4 ring-white" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBwxe7yzi2swbpTdB3L-Rd-wkGR8zpeBLn1kQ7gOUw_5cXEbXhJUdLk3AC2gSo9wIKpdoVSj67wIHvhOshQ3Ss6bGjDcJqaja82N6YtyJmurv27JFJrICDBqQ1teX-bMwMNob8uQSvaX_9sHsoXxlttXEJ_krV5ZojPzMZsAiBUS1YUx_4F7YYeiZ4XHap761v4fJvfdoAQWTuVS4k8owPPPNgFuqyB7IGE5EHeRjc_OkwNdfVUncVxyNqFwvoBuQn4fz74GnhwkK0');"></div>
+</div>
+</header>
+<div class="p-8 max-w-6xl mx-auto w-full">
+<div class="mb-12">
+<div class="flex flex-col gap-2">
+<h1 class="text-secondary text-4xl font-black tracking-tight flex items-center gap-3">Clasificación <span class="material-symbols-outlined text-primary text-4xl">workspace_premium</span></h1>
+<p class="text-gray-500 text-lg font-normal">Compitiendo en la <span class="text-secondary font-bold">Liga Diamante</span> • Finaliza en 2d 14h</p>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-6 mb-16 items-end max-w-4xl mx-auto">
+<div class="flex flex-col items-center">
+<div class="relative mb-4">
+<div class="size-20 rounded-full border-4 border-gray-200 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBMq2d394iwHMpND87WkGoMMxM-5eIJ5dWZ3tvbCf4M6ykDvg6jf6YfxNgXpcxx1Ha9Jlr1NkCIvw3iXy_F2HDtX2fdHcfd6OHsL-DtUSKWVIFpqGZvXDEiuFluGsW4Ys6c4GHavVW4W3ihqi9YQQhq6-329JGlXWJZuzBEFc2avRb6olBpu9njyZN9guoAoHR_PT9QrxOoSYBkRP40opQW5RD9YMXd2ZHkCsCov9Bj8Jm7FFI78oreSS8PuezDhf7qkPnAcKqxl8A');"></div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-gray-200 text-secondary text-xs font-black px-3 py-1 rounded-full border-2 border-white">2</div>
+</div>
+<div class="bg-white rounded-t-2xl w-full pt-8 pb-6 flex flex-col items-center shadow-sm border-x border-t border-gray-100 h-32 relative">
+<p class="text-secondary font-bold text-sm text-center px-2 truncate">Sarah Miller</p>
+<p class="text-primary font-black text-lg">18,240 <span class="text-[10px]">XP</span></p>
+</div>
+</div>
+<div class="flex flex-col items-center">
+<div class="relative mb-6 scale-110">
+<div class="size-24 rounded-full border-4 border-primary bg-cover bg-center ring-8 ring-primary/10" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCE9LzKE-Y9go8O9yJURLGtvr60szPmdxpKbDgVZwUbZPJ_BH92Q-4YFi3Kyd5_vwSIVkfWNyuktMlB9OSHv3bxsMIetXip96cyCi4gH5CGO4eTZ3R5GaFIe5AmYQYo9vUdSuh8ishHUaOiv-rLq1X4D03KjWYz5_GuAWSGQt3r3sakoDg3yld-Aq45o_i4aPZ1I6lVxxjiraILqL7wDN92eA3ZTZ7RCNgmVASqcCq4JpUdG0-nMsOdiTWlJRYRyQ4syocBKok6iKQ');"></div>
+<div class="absolute -top-6 left-1/2 -translate-x-1/2">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1">military_tech</span>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-white text-sm font-black px-4 py-1 rounded-full border-2 border-white shadow-lg">1</div>
+</div>
+<div class="bg-secondary rounded-t-3xl w-full pt-10 pb-8 flex flex-col items-center shadow-xl h-44 relative">
+<p class="text-white font-bold text-base text-center px-2 truncate">David Jo</p>
+<p class="text-primary font-black text-2xl">24,500 <span class="text-xs text-primary/80">XP</span></p>
+<div class="mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-sm">local_fire_department</span>
+<span class="text-primary/70 text-[10px] font-bold uppercase tracking-wider">Racha de 32 Días</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-center">
+<div class="relative mb-4">
+<div class="size-20 rounded-full border-4 border-orange-200 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCEG3M45mhWOlVRLlYx8XmRE-u0SSyiSzvlpTmcH36yKDY8sQGoqm5PTq1nxj1Y-xsK4nAyDrwUhjJjVcSgKE06R_K0g0DtNXRYkQwKYOrrqAOXIZh1cbFRr5w2-vj8hkqv-uVc_IzbDWZFt96Bnbjvga8-EA8rGLcQwRXD2y0CtMy-a0--B4o59WPT7JPpijmDFE_zIVmHxDJQSLr98GZC2yZjKy_FQLq6UDZAOwdzL29Ank9-N5CNS6hbpon0cMESfPsDjxMfsLk');"></div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-orange-200 text-secondary text-xs font-black px-3 py-1 rounded-full border-2 border-white">3</div>
+</div>
+<div class="bg-white rounded-t-2xl w-full pt-8 pb-6 flex flex-col items-center shadow-sm border-x border-t border-gray-100 h-28 relative">
+<p class="text-secondary font-bold text-sm text-center px-2 truncate">Alex Chen</p>
+<p class="text-primary font-black text-lg">15,800 <span class="text-[10px]">XP</span></p>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-12">
+<div class="grid grid-cols-[80px_1fr_120px_120px] px-8 py-4 bg-gray-50 border-b border-gray-100 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+<span>Rango</span>
+<span>Usuario</span>
+<span class="text-right">Racha</span>
+<span class="text-right">Experiencia</span>
+</div>
+<div class="grid grid-cols-[80px_1fr_120px_120px] items-center px-8 py-5 border-b border-gray-100 bg-orange-50/50">
+<div class="flex items-center">
+<span class="text-secondary font-black text-lg">4</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-full bg-cover bg-center border-2 border-primary" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBwxe7yzi2swbpTdB3L-Rd-wkGR8zpeBLn1kQ7gOUw_5cXEbXhJUdLk3AC2gSo9wIKpdoVSj67wIHvhOshQ3Ss6bGjDcJqaja82N6YtyJmurv27JFJrICDBqQ1teX-bMwMNob8uQSvaX_9sHsoXxlttXEJ_krV5ZojPzMZsAiBUS1YUx_4F7YYeiZ4XHap761v4fJvfdoAQWTuVS4k8owPPPNgFuqyB7IGE5EHeRjc_OkwNdfVUncVxyNqFwvoBuQn4fz74GnhwkK0');"></div>
+<div>
+<p class="text-secondary font-bold text-sm">Tú</p>
+<p class="text-primary text-[10px] font-black uppercase tracking-tight">Estrella Naciente</p>
+</div>
+</div>
+<div class="flex items-center justify-end gap-1.5">
+<span class="text-secondary font-bold text-sm">12d</span>
+<span class="material-symbols-outlined text-orange-500 text-base">local_fire_department</span>
+</div>
+<div class="text-right">
+<p class="text-secondary font-black text-base">Compitiendo en la <span class="text-secondary font-bold">Liga Diamante</span> • Finaliza en 2d 14h</p>
+</div>
+</div>
+<div class="grid grid-cols-[80px_1fr_120px_120px] items-center px-8 py-5 border-b border-gray-100 leaderboard-row transition-colors cursor-pointer">
+<div class="flex items-center">
+<span class="text-gray-400 font-bold text-lg">5</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-full bg-gray-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-400">person</span>
+</div>
+<div>
+<p class="text-secondary font-bold text-sm">Compitiendo en la <span class="text-secondary font-bold">Liga Diamante</span> • Finaliza en 2d 14h</p>
+<p class="text-gray-400 text-[10px] font-medium uppercase tracking-tight">Nivel 24</p>
+</div>
+</div>
+<div class="flex items-center justify-end gap-1.5">
+<span class="text-secondary font-bold text-sm">8d</span>
+<span class="material-symbols-outlined text-gray-300 text-base">local_fire_department</span>
+</div>
+<div class="text-right">
+<p class="text-secondary font-black text-base">Compitiendo en la <span class="text-secondary font-bold">Liga Diamante</span> • Finaliza en 2d 14h</p>
+</div>
+</div>
+<div class="grid grid-cols-[80px_1fr_120px_120px] items-center px-8 py-5 border-b border-gray-100 leaderboard-row transition-colors cursor-pointer">
+<div class="flex items-center">
+<span class="text-gray-400 font-bold text-lg">6</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-full bg-gray-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-400">person</span>
+</div>
+<div>
+<p class="text-secondary font-bold text-sm">Compitiendo en la <span class="text-secondary font-bold">Liga Diamante</span> • Finaliza en 2d 14h</p>
+<p class="text-gray-400 text-[10px] font-medium uppercase tracking-tight">Nivel 22</p>
+</div>
+</div>
+<div class="flex items-center justify-end gap-1.5">
+<span class="text-secondary font-bold text-sm">45d</span>
+<span class="material-symbols-outlined text-orange-500 text-base">local_fire_department</span>
+</div>
+<div class="text-right">
+<p class="text-secondary font-black text-base">Compitiendo en la <span class="text-secondary font-bold">Liga Diamante</span> • Finaliza en 2d 14h</p>
+</div>
+</div>
+<div class="grid grid-cols-[80px_1fr_120px_120px] items-center px-8 py-5 border-b border-gray-100 leaderboard-row transition-colors cursor-pointer">
+<div class="flex items-center">
+<span class="text-gray-400 font-bold text-lg">7</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-full bg-gray-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-400">person</span>
+</div>
+<div>
+<p class="text-secondary font-bold text-sm">Compitiendo en la <span class="text-secondary font-bold">Liga Diamante</span> • Finaliza en 2d 14h</p>
+<p class="text-gray-400 text-[10px] font-medium uppercase tracking-tight">Nivel 19</p>
+</div>
+</div>
+<div class="flex items-center justify-end gap-1.5">
+<span class="text-secondary font-bold text-sm">2d</span>
+<span class="material-symbols-outlined text-gray-300 text-base">local_fire_department</span>
+</div>
+<div class="text-right">
+<p class="text-secondary font-black text-base">Compitiendo en la <span class="text-secondary font-bold">Liga Diamante</span> • Finaliza en 2d 14h</p>
+</div>
+</div>
+</div>
+<div class="w-full bg-secondary rounded-3xl p-10 text-white flex flex-col md:flex-row items-center justify-between shadow-2xl shadow-secondary/20 border border-white/5 overflow-hidden relative">
+<div class="absolute -right-10 -bottom-10 size-64 bg-primary/10 rounded-full blur-3xl"></div>
+<div class="flex flex-col gap-3 mb-6 md:mb-0 relative z-10">
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-black uppercase tracking-[0.2em] bg-primary px-3 py-1 rounded-full">Recompensa Top 10%</span>
+</div>
+<h3 class="text-3xl font-black">Únete al Nivel Élite</h3>
+<p class="text-white/70 max-w-md font-medium text-lg">Mantén tu posición entre los 5 mejores para desbloquear la exclusiva <span class="text-primary font-bold">Insignia Syntax Pro</span> y el fin de semana de doble XP.</p>
+</div>
+<div class="flex flex-col gap-4 w-full md:w-auto relative z-10">
+<button class="bg-primary text-white font-black px-10 py-4 rounded-2xl hover:scale-105 transition-all shadow-xl shadow-primary/30">Ver Desafíos</button>
+<p class="text-center text-[10px] font-bold text-white/40 uppercase tracking-widest">Calculado en tiempo real</p>
+</div>
+</div>
+</div>
+</main>
+<aside class="w-80 border-l border-gray-100 bg-white hidden xl:flex flex-col h-screen sticky top-0 p-8 overflow-y-auto">
+<h3 class="text-secondary font-bold text-lg mb-8">Estadísticas Semanales</h3>
+<div class="space-y-6 mb-12">
+<div class="p-5 rounded-2xl border border-gray-100 bg-gray-50/50">
+<div class="flex items-center justify-between mb-4">
+<p class="text-gray-400 text-[10px] font-black uppercase tracking-widest">Posición Activa</p>
+<span class="material-symbols-outlined text-primary text-xl">trending_up</span>
+</div>
+<div class="flex items-end gap-2">
+<p class="text-3xl font-black text-secondary">#4</p>
+<p class="text-accent text-sm font-bold mb-1">+2 desde ayer</p>
+</div>
+</div>
+<div class="p-5 rounded-2xl border border-gray-100 bg-gray-50/50">
+<div class="flex items-center justify-between mb-4">
+<p class="text-gray-400 text-[10px] font-black uppercase tracking-widest">Promedio Puntos / Día</p>
+<span class="material-symbols-outlined text-primary text-xl">insights</span>
+</div>
+<div class="flex items-end gap-2">
+<p class="text-3xl font-black text-secondary">1,240</p>
+<p class="text-gray-400 text-sm font-bold mb-1">Top 5%</p>
+</div>
+</div>
+</div>
+<h3 class="text-secondary font-bold text-lg mb-6">Rivales Recientes</h3>
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-4 relative">
+<div class="size-11 rounded-full bg-cover bg-center ring-2 ring-primary ring-offset-2" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCEG3M45mhWOlVRLlYx8XmRE-u0SSyiSzvlpTmcH36yKDY8sQGoqm5PTq1nxj1Y-xsK4nAyDrwUhjJjVcSgKE06R_K0g0DtNXRYkQwKYOrrqAOXIZh1cbFRr5w2-vj8hkqv-uVc_IzbDWZFt96Bnbjvga8-EA8rGLcQwRXD2y0CtMy-a0--B4o59WPT7JPpijmDFE_zIVmHxDJQSLr98GZC2yZjKy_FQLq6UDZAOwdzL29Ank9-N5CNS6hbpon0cMESfPsDjxMfsLk');"></div>
+<div class="flex-1">
+<p class="text-sm font-bold text-secondary leading-none">Alex Chen</p>
+<p class="text-xs text-gray-500 mt-1">+400 XP ganados</p>
+</div>
+<span class="text-[10px] text-gray-400 font-bold">2m</span>
+</div>
+<div class="flex items-center gap-4 relative">
+<div class="size-11 rounded-full bg-cover bg-center ring-2 ring-gray-100 ring-offset-2" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBMq2d394iwHMpND87WkGoMMxM-5eIJ5dWZ3tvbCf4M6ykDvg6jf6YfxNgXpcxx1Ha9Jlr1NkCIvw3iXy_F2HDtX2fdHcfd6OHsL-DtUSKWVIFpqGZvXDEiuFluGsW4Ys6c4GHavVW4W3ihqi9YQQhq6-329JGlXWJZuzBEFc2avRb6olBpu9njyZN9guoAoHR_PT9QrxOoSYBkRP40opQW5RD9YMXd2ZHkCsCov9Bj8Jm7FFI78oreSS8PuezDhf7qkPnAcKqxl8A');"></div>
+<div class="flex-1">
+<p class="text-sm font-bold text-secondary leading-none">Sarah Miller</p>
+<p class="text-xs text-gray-500 mt-1">Cuestionario Completado</p>
+</div>
+<span class="text-[10px] text-gray-400 font-bold">15m</span>
+</div>
+</div>
+<div class="mt-auto pt-8">
+<div class="bg-primary/5 p-6 rounded-3xl border border-primary/10">
+<p class="text-primary font-black text-xs uppercase tracking-widest mb-2">Consejo Pro</p>
+<p class="text-secondary/70 text-sm leading-relaxed">¡Completar desafíos "Difíciles" te otorga un multiplicador de 1.5x para tu rango en la clasificación!</p>
+</div>
+</div>
+</aside>
+</div>
+</body></html>
