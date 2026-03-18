@@ -165,100 +165,8 @@ export function LeaderboardView() {
 
   return (
     <div className="flex min-h-screen bg-[#FAFAFA] text-[#264653]">
-      <aside className="sticky top-0 hidden h-screen w-64 flex-col bg-[#264653] text-white/80 shadow-2xl lg:flex">
-        <div className="flex h-full flex-col justify-between p-6">
-          <div className="flex flex-col gap-8">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F4A261] text-white shadow-lg">
-                <span className="material-symbols-outlined">code</span>
-              </div>
-              <div>
-                <h2 className="text-lg font-bold leading-none text-white">Syntax</h2>
-                <p className="text-xs text-white/50">Learn Smarter</p>
-              </div>
-            </div>
-
-            <nav className="flex flex-col gap-1">
-              {[
-                ["grid_view", "Panel", "/home"],
-                ["map", "Ruta", "/learningPath"],
-                ["emoji_events", "Clasificacion", "/leaderboard"],
-                ["terminal", "Practica", "/home"],
-                ["rocket_launch", "Proyectos", "/premium"],
-              ].map(([icon, label, href]) => (
-                <Link
-                  key={label}
-                  href={href}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
-                    label === "Clasificacion"
-                      ? "bg-[#F4A261] text-white shadow-md shadow-[#F4A261]/20"
-                      : "hover:bg-white/10 hover:text-white"
-                  }`}
-                >
-                  <span className="material-symbols-outlined">{icon}</span>
-                  {label}
-                </Link>
-              ))}
-              <Link
-                href="/premium"
-                className="mt-4 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/10 hover:text-white"
-              >
-                <span className="material-symbols-outlined">settings</span>
-                Ajustes
-              </Link>
-            </nav>
-          </div>
-
-          <Link
-            href="/unlockPro"
-            className="flex items-center gap-3 rounded-lg border-t border-white/10 px-3 pt-4 text-sm font-medium transition-colors hover:text-white"
-          >
-            <span className="material-symbols-outlined">help</span>
-            Centro de Ayuda
-          </Link>
-        </div>
-      </aside>
-
       <main className="flex-1 overflow-y-auto">
-        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white/80 px-4 py-4 backdrop-blur-md md:px-8">
-          <div className="flex max-w-md flex-1 items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-3">
-            <span className="material-symbols-outlined text-gray-400">search</span>
-            <input
-              type="text"
-              placeholder="Buscar usuarios..."
-              className="h-10 w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-            />
-          </div>
-
-          <div className="ml-4 flex items-center gap-4 md:gap-6">
-            <div className="hidden items-center gap-6 md:flex">
-              <Link href="/home" className="text-sm font-medium transition-colors hover:text-[#F4A261]">
-                Cursos
-              </Link>
-              <Link href="/premium" className="text-sm font-medium transition-colors hover:text-[#F4A261]">
-                Comunidad
-              </Link>
-            </div>
-            <button
-              className="h-10 rounded-xl bg-[#F4A261] px-4 text-sm font-bold text-white shadow-lg shadow-[#F4A261]/20 transition-all hover:brightness-110 md:px-6"
-              onClick={() => window.alert("Plan Pro en preparacion.")}
-            >
-              Pasar a Pro
-            </button>
-            <LogoutButton />
-            <div
-              className="h-10 w-10 rounded-full border-2 border-[#F4A261]/20 bg-cover bg-center ring-4 ring-white"
-              style={{
-                backgroundImage:
-                  "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBwxe7yzi2swbpTdB3L-Rd-wkGR8zpeBLn1kQ7gOUw_5cXEbXhJUdLk3AC2gSo9wIKpdoVSj67wIHvhOshQ3Ss6bGjDcJqaja82N6YtyJmurv27JFJrICDBqQ1teX-bMwMNob8uQSvaX_9sHsoXxlttXEJ_krV5ZojPzMZsAiBUS1YUx_4F7YYeiZ4XHap761v4fJvfdoAQWTuVS4k8owPPPNgFuqyB7IGE5EHeRjc_OkwNdfVUncVxyNqFwvoBuQn4fz74GnhwkK0')",
-              }}
-            />
-          </div>
-        </header>
-
-        <div className="mx-auto w-full max-w-6xl p-4 md:p-8 xl:pr-96">
+        <div className="mx-auto w-500 max-w-6xl p-4 md:p-8 xl:pr-96">
           <section className="mb-12">
             <h1 className="flex items-center gap-3 text-3xl font-black text-[#264653] md:text-4xl">
               Clasificacion
@@ -414,7 +322,7 @@ export function LeaderboardView() {
         </div>
       </main>
 
-      <aside className="fixed right-0 top-0 hidden h-screen w-80 flex-col overflow-y-auto border-l border-gray-100 bg-white p-8 xl:flex">
+      <aside className="right-0 top-0 hidden h-350 w-80 flex-col overflow-y-auto border-l border-gray-100 bg-white p-8 xl:flex">
         <h3 className="mb-8 text-lg font-bold text-[#264653]">Estadisticas Semanales</h3>
 
         <div className="mb-12 space-y-6">

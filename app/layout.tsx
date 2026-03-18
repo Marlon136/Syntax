@@ -14,15 +14,27 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=optional"
+        />
+
+      </head>
+
+      <body className="bg-neutral-50">
 
         <Navbar />
 
-        {children}
+        <main>
+          {children}
+        </main>
 
         <Footer />
 
       </body>
+
     </html>
   );
 }
