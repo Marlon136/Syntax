@@ -6,22 +6,20 @@ import PricingHero from "@/app/components/pricing/PricingHero";
 import Features from "@/app/components/pricing/Features";
 import Plans from "@/app/components/pricing/Plans";
 import PlanTable from "@/app/components/pricing/PlanTable";
+import { Separator } from "@/components/ui/separator";
+
 
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-[#F3DDC9]">
+    <div className="min-h-screen bg-[#e8c46e]">
       
       <Hero />
       <Stats />
+      <Separator/>
       <Courses />
       <Subscribe />
-      <>
-        <PricingHero />
-        <Features />
-        <Plans />
-        <PlanTable />
-      </>
+    
     </div>
   );
 }

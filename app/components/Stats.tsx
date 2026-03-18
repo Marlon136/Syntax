@@ -1,8 +1,8 @@
 export default function Stats() {
 
   const stats = [
-    ["Active Students", "50,000+"],
-    ["Courses Available", "120+"],
+    ["Active Students", "6,000+"],
+    ["Lessons Available", "120+"],
     ["Success Rate", "98%"],
     ["Average Rating", "4.9/5"],
   ];
@@ -15,9 +15,9 @@ export default function Stats() {
         {stats.map((s, i) => (
           <div
             key={i}
-            className="bg-[#264653]/5 p-6 rounded-xl border border-[#264653]/20 text-center"
+            className="bg-[#fff8f3] p-6 rounded-xl border border-[#264653]/20 text-center"
           >
-            <p className="text-sm text-[#264653]/80">
+            <p className="text-sm font-bold text-[#264653]/80">
               {s[0]}
             </p>
 

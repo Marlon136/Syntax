@@ -39,7 +39,7 @@ export default function CourseCard({
 
       <button
         onClick={() => setOpen(true)}
-        className="mt-3 w-full border border-[#264653] py-2 text-[#264653] rounded hover:bg-[#E76F51] hover:text-white transition"
+        className="mt-3 w-full bg-[#2a4d60] hover:bg-[#47a599] text-white px-6 py-3 rounded-lg transition"
       >
         View Course
       </button>

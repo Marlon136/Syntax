@@ -4,12 +4,12 @@ export default function Courses() {
   return (
     <section 
       id="courses"
-      className="bg-neutral-50 py-14">
+      className="bg-[#2a4d60] py-14">
 
       <div className="max-w-6xl mx-auto px-6">
 
-        <h2 className="text-2xl font-bold mb-8 text-[#E76F51]">
-          Popular Courses
+        <h2 className="text-3xl font-bold mb-8 text-[#ffffff]">
+          Our Popular Courses
         </h2>
 
         <div className="grid grid-cols-3 gap-6">

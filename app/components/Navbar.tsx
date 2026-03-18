@@ -31,17 +31,17 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="flex justify-between items-center px-12 py-5 bg-neutral-50 border-b border-[#264653]/20">
-
+    <nav className="fixed w-full h-17 flex justify-between items-center px-12 py-5 bg-[#fff8f3] border-b border-[#264653]/20">
+    <div className="flex items-center gap-10">
       <div
         onClick={() => router.push("/")}
-        className="text-xl font-bold text-[#E76F51] cursor-pointer"
+        className="text-3xl font-bold text-[#2a4d60] cursor-pointer"
       >
-        Syntax
+        Sy<span className="text-[#47a599]">n</span><span className="text-[#E76F51]">taX</span>
+
       </div>
 
-      <div className="flex gap-6 text-sm text-[#264653]">
-
+      <div className="flex gap-6 text-l text-[#264653]">
         <button
           onClick={goToCourses}
           className="hover:text-[#E76F51] transition"
@@ -52,19 +52,12 @@ export default function Navbar() {
         <button className="hover:text-[#E76F51] transition">
           Paths
         </button>
-
-        <button
-          onClick={goToPricing}
-          className="hover:text-[#E76F51] transition"
-        >
-          Pricing
-        </button>
-
       </div>
+    </div>
 
       <div className="flex gap-3">
 
-        <button className="text-[#264653] hover:text-[#E76F51] transition">
+        <button className="text-l text-[#264653] hover:text-[#47a599] transition">
           Log in
         </button>
 
@@ -73,7 +66,7 @@ export default function Navbar() {
         </button>
 
       </div>
-
+    
     </nav>
   );
 }

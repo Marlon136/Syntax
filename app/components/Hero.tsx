@@ -16,20 +16,21 @@ export default function Hero() {
 
       <div className="max-w-xl">
 
-        <h1 className="text-5xl font-bold mb-4 text-[#264653]">
-          Master <span className="text-[#E76F51]">Java</span> & Beyond
+        <h1 className="text-5xl font-bold mb-4 text-[#2a4d60]">
+          Master <span className="text-[#E76F51]">Java</span> & Beyond with Syntax
         </h1>
 
         <p className="text-[#264653]/80 mb-6 text-lg">
           Learn Java, Python, and JavaScript through
-          interactive lessons.
+          interactive lessons. <br></br>
+          Join 6,000+ students and start your coding journey today.
         </p>
 
         <div className="flex gap-4">
 
           <button
             onClick={goToCourses}
-            className="bg-[#E76F51] hover:bg-[#d45d42] text-white px-6 py-3 rounded-lg transition"
+            className="bg-[#f0a262] hover:bg-[#d45d42] text-white px-6 py-3 rounded-lg transition"
           >
             Start Learning
           </button>
