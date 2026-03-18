@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 export function LoginView() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -41,8 +42,19 @@ export function LoginView() {
       window.localStorage.removeItem("syntax-user-email");
     }
 
+    // Cookie simple para habilitar rutas protegidas por middleware.
+    const maxAge = rememberMe ? 60 * 60 * 24 * 30 : undefined;
+    const cookieParts = [
+      "syntax-auth=1",
+      "Path=/",
+      "SameSite=Lax",
+      ...(maxAge ? [`Max-Age=${maxAge}`] : []),
+    ];
+    document.cookie = cookieParts.join("; ");
+
     setMessage("Sesion iniciada correctamente. Redirigiendo...");
-    router.push("/home");
+    const redirectTo = searchParams.get("from") || "/home";
+    router.push(redirectTo);
   };
 
   const handleSocialLogin = (provider: "Google" | "GitHub") => {

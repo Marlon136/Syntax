@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { LogoutButton } from "@/app/components/LogoutButton";
 
 type PodiumUser = {
   id: number;
@@ -246,6 +247,7 @@ export function LeaderboardView() {
             >
               Pasar a Pro
             </button>
+            <LogoutButton />
             <div
               className="h-10 w-10 rounded-full border-2 border-[#F4A261]/20 bg-cover bg-center ring-4 ring-white"
               style={{

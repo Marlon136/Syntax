@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { LogoutButton } from "@/app/components/LogoutButton";
 
 type Milestone = {
   id: number;
@@ -155,6 +156,7 @@ export function LearningPathView() {
             <button className="h-10 rounded-xl bg-[#F4A261] px-4 text-sm font-bold text-white shadow-lg shadow-[#F4A261]/20 transition-all hover:brightness-110 md:px-6">
               Ser Pro
             </button>
+            <LogoutButton />
             <div
               className="h-10 w-10 rounded-full border-2 border-[#F4A261]/20 bg-cover bg-center ring-4 ring-white"
               style={{
