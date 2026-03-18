@@ -1,12 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import CurriculumModal from "./CurriculumModal";
+
 
 export default function Hero() {
 
-  const [open, setOpen] = useState(false);
 
   function goToCourses() {
     const el = document.getElementById("courses");
@@ -36,13 +34,6 @@ export default function Hero() {
             Start Learning
           </button>
 
-          <button
-            onClick={() => setOpen(true)}
-            className="border border-[#264653]/30 px-6 py-3 text-[#264653] rounded-lg hover:bg-[#264653]/10 transition"
-          >
-            View Curriculum
-          </button>
-
         </div>
 
       </div>
@@ -55,10 +46,7 @@ export default function Hero() {
         className="w-[600px] h-[270px] object-cover rounded-xl shadow"
       />
 
-      <CurriculumModal
-        open={open}
-        onClose={() => setOpen(false)}
-      />
+  
 
     </section>
   );

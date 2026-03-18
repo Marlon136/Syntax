@@ -1,13 +1,27 @@
-import Link from "next/link";
+import Hero from "@/app/components/Hero";
+import Stats from "@/app/components/Stats";
+import Courses from "@/app/components/Courses";
+import Subscribe from "@/app/components/Suscribe";
+import PricingHero from "@/app/components/pricing/PricingHero";
+import Features from "@/app/components/pricing/Features";
+import Plans from "@/app/components/pricing/Plans";
+import PlanTable from "@/app/components/pricing/PlanTable";
 
-export default function Home() {
+
+export default function Page() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-      <Link href={"/home"}> Home</Link>
-      <Link href={"/unlockPro"}> UnlockPro</Link>
-       <Link href={"/premium"}> Premium</Link>
-      </main>
+    <div className="min-h-screen bg-[#F3DDC9]">
+      
+      <Hero />
+      <Stats />
+      <Courses />
+      <Subscribe />
+      <>
+        <PricingHero />
+        <Features />
+        <Plans />
+        <PlanTable />
+      </>
     </div>
   );
 }
