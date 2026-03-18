@@ -1,6 +1,55 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
 
 export function LoginView() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    setMessage(null);
+
+    if (!email.includes("@")) {
+      setError("Ingresa un correo valido.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("La contrasena debe tener al menos 6 caracteres.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Simula autenticacion mientras se integra un backend real.
+    await new Promise((resolve) => setTimeout(resolve, 600));
+
+    if (rememberMe) {
+      window.localStorage.setItem("syntax-user-email", email);
+    } else {
+      window.localStorage.removeItem("syntax-user-email");
+    }
+
+    setMessage("Sesion iniciada correctamente. Redirigiendo...");
+    router.push("/home");
+  };
+
+  const handleSocialLogin = (provider: "Google" | "GitHub") => {
+    setError(null);
+    setMessage(`Inicio de sesion con ${provider} disponible pronto.`);
+  };
+
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#FEF9F3] text-[#264653]">
       <header className="sticky top-0 z-20 border-b border-[#2A9D8F]/10 bg-white/80 px-6 py-4 backdrop-blur-md md:px-12">
@@ -31,9 +80,9 @@ export function LoginView() {
               Espanol
               <span className="material-symbols-outlined text-sm">expand_more</span>
             </button>
-            <a href="#" className="text-sm font-semibold text-[#264653] transition-colors hover:text-[#F4A261]">
+            <Link href="/home" className="text-sm font-semibold text-[#264653] transition-colors hover:text-[#F4A261]">
               Documentation
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -50,7 +99,7 @@ export function LoginView() {
               <p className="text-gray-500">Listo para mejorar tu codigo hoy?</p>
             </div>
 
-            <form className="space-y-5">
+            <form className="space-y-5" onSubmit={handleSubmit}>
               <div>
                 <label className="mb-1.5 block text-sm font-semibold text-gray-700" htmlFor="email">
                   Correo Electronico
@@ -61,6 +110,8 @@ export function LoginView() {
                   name="email"
                   placeholder="dev@syntax.io"
                   type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                 />
               </div>
 
@@ -69,9 +120,9 @@ export function LoginView() {
                   <label className="block text-sm font-semibold text-gray-700" htmlFor="password">
                     Contrasena
                   </label>
-                  <a href="#" className="text-xs font-bold text-[#2A9D8F] hover:underline">
+                  <Link href="/unlockPro" className="text-xs font-bold text-[#2A9D8F] hover:underline">
                     Olvidaste tu contrasena?
-                  </a>
+                  </Link>
                 </div>
                 <div className="relative">
                   <input
@@ -79,13 +130,19 @@ export function LoginView() {
                     id="password"
                     name="password"
                     placeholder="••••••••"
-                    type="password"
+                    type={isPasswordVisible ? "text" : "password"}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
                   />
                   <button
                     type="button"
                     className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 transition-colors hover:text-[#2A9D8F]"
+                    onClick={() => setIsPasswordVisible((value) => !value)}
+                    aria-label={isPasswordVisible ? "Ocultar contrasena" : "Mostrar contrasena"}
                   >
-                    <span className="material-symbols-outlined">visibility</span>
+                    <span className="material-symbols-outlined">
+                      {isPasswordVisible ? "visibility_off" : "visibility"}
+                    </span>
                   </button>
                 </div>
               </div>
@@ -96,15 +153,21 @@ export function LoginView() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
+                  checked={rememberMe}
+                  onChange={(event) => setRememberMe(event.target.checked)}
                 />
                 Mantener sesion iniciada
               </label>
 
+              {error ? <p className="rounded-md bg-red-50 p-2 text-sm font-medium text-red-600">{error}</p> : null}
+              {message ? <p className="rounded-md bg-[#2A9D8F]/10 p-2 text-sm font-medium text-[#2A9D8F]">{message}</p> : null}
+
               <button
                 className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#F4A261] px-4 py-3.5 font-bold text-[#264653] shadow-lg shadow-[#F4A261]/20 transition-all active:scale-[0.98] hover:opacity-90"
                 type="submit"
+                disabled={isSubmitting}
               >
-                Entrar a la Consola
+                {isSubmitting ? "Entrando..." : "Entrar a la Consola"}
                 <span className="material-symbols-outlined text-xl">login</span>
               </button>
             </form>
@@ -122,6 +185,7 @@ export function LoginView() {
               <button
                 type="button"
                 className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white py-2.5 transition-colors hover:bg-gray-50"
+                onClick={() => handleSocialLogin("Google")}
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
                   <path
@@ -147,6 +211,7 @@ export function LoginView() {
               <button
                 type="button"
                 className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white py-2.5 transition-colors hover:bg-gray-50"
+                onClick={() => handleSocialLogin("GitHub")}
               >
                 <svg className="h-5 w-5 fill-[#264653]" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
@@ -158,9 +223,9 @@ export function LoginView() {
 
           <p className="mt-8 text-center text-sm text-gray-600">
             No tienes una cuenta?{" "}
-            <a href="#" className="font-bold text-[#2A9D8F] transition-colors hover:text-[#F4A261]">
+            <Link href="/premium" className="font-bold text-[#2A9D8F] transition-colors hover:text-[#F4A261]">
               Comienza tu busqueda ahora
-            </a>
+            </Link>
           </p>
         </div>
       </main>

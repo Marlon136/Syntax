@@ -1,38 +1,53 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+
 type PodiumUser = {
+  id: number;
   name: string;
-  xp: string;
+  xp: number;
+  streak: number;
   place: number;
   avatar: string;
   highlight?: boolean;
 };
 
 type RankRow = {
+  id: number;
   rank: number;
   name: string;
+  xp: number;
   detail: string;
-  streak: string;
+  streak: number;
   isCurrentUser?: boolean;
 };
 
 const podium: PodiumUser[] = [
   {
+    id: 1,
     name: "Sarah Miller",
-    xp: "18,240",
+    xp: 18240,
+    streak: 18,
     place: 2,
     avatar:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuBMq2d394iwHMpND87WkGoMMxM-5eIJ5dWZ3tvbCf4M6ykDvg6jf6YfxNgXpcxx1Ha9Jlr1NkCIvw3iXy_F2HDtX2fdHcfd6OHsL-DtUSKWVIFpqGZvXDEiuFluGsW4Ys6c4GHavVW4W3ihqi9YQQhq6-329JGlXWJZuzBEFc2avRb6olBpu9njyZN9guoAoHR_PT9QrxOoSYBkRP40opQW5RD9YMXd2ZHkCsCov9Bj8Jm7FFI78oreSS8PuezDhf7qkPnAcKqxl8A",
   },
   {
+    id: 2,
     name: "David Jo",
-    xp: "24,500",
+    xp: 24500,
+    streak: 32,
     place: 1,
     highlight: true,
     avatar:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCE9LzKE-Y9go8O9yJURLGtvr60szPmdxpKbDgVZwUbZPJ_BH92Q-4YFi3Kyd5_vwSIVkfWNyuktMlB9OSHv3bxsMIetXip96cyCi4gH5CGO4eTZ3R5GaFIe5AmYQYo9vUdSuh8ishHUaOiv-rLq1X4D03KjWYz5_GuAWSGQt3r3sakoDg3yld-Aq45o_i4aPZ1I6lVxxjiraILqL7wDN92eA3ZTZ7RCNgmVASqcCq4JpUdG0-nMsOdiTWlJRYRyQ4syocBKok6iKQ",
   },
   {
+    id: 3,
     name: "Alex Chen",
-    xp: "15,800",
+    xp: 15800,
+    streak: 14,
     place: 3,
     avatar:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCEG3M45mhWOlVRLlYx8XmRE-u0SSyiSzvlpTmcH36yKDY8sQGoqm5PTq1nxj1Y-xsK4nAyDrwUhjJjVcSgKE06R_K0g0DtNXRYkQwKYOrrqAOXIZh1cbFRr5w2-vj8hkqv-uVc_IzbDWZFt96Bnbjvga8-EA8rGLcQwRXD2y0CtMy-a0--B4o59WPT7JPpijmDFE_zIVmHxDJQSLr98GZC2yZjKy_FQLq6UDZAOwdzL29Ank9-N5CNS6hbpon0cMESfPsDjxMfsLk",
@@ -41,33 +56,112 @@ const podium: PodiumUser[] = [
 
 const rankings: RankRow[] = [
   {
+    id: 4,
     rank: 4,
     name: "Tu",
+    xp: 12400,
     detail: "Estrella Naciente",
-    streak: "12d",
+    streak: 12,
     isCurrentUser: true,
   },
   {
+    id: 5,
     rank: 5,
-    name: "Rival Nivel 24",
+    name: "Leo Parker",
+    xp: 11980,
     detail: "Compitiendo en Liga Diamante",
-    streak: "8d",
+    streak: 8,
   },
   {
+    id: 6,
     rank: 6,
-    name: "Rival Nivel 22",
+    name: "Nadia Cruz",
+    xp: 10850,
     detail: "Compitiendo en Liga Diamante",
-    streak: "45d",
+    streak: 45,
   },
   {
+    id: 7,
     rank: 7,
-    name: "Rival Nivel 19",
+    name: "Dario Kim",
+    xp: 10020,
     detail: "Compitiendo en Liga Diamante",
-    streak: "2d",
+    streak: 2,
   },
 ];
 
+const rivals = [
+  {
+    id: 1,
+    name: "Alex Chen",
+    event: "+400 XP ganados",
+    time: "2m",
+    avatar:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuCEG3M45mhWOlVRLlYx8XmRE-u0SSyiSzvlpTmcH36yKDY8sQGoqm5PTq1nxj1Y-xsK4nAyDrwUhjJjVcSgKE06R_K0g0DtNXRYkQwKYOrrqAOXIZh1cbFRr5w2-vj8hkqv-uVc_IzbDWZFt96Bnbjvga8-EA8rGLcQwRXD2y0CtMy-a0--B4o59WPT7JPpijmDFE_zIVmHxDJQSLr98GZC2yZjKy_FQLq6UDZAOwdzL29Ank9-N5CNS6hbpon0cMESfPsDjxMfsLk",
+  },
+  {
+    id: 2,
+    name: "Sarah Miller",
+    event: "Cuestionario completado",
+    time: "15m",
+    avatar:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBMq2d394iwHMpND87WkGoMMxM-5eIJ5dWZ3tvbCf4M6ykDvg6jf6YfxNgXpcxx1Ha9Jlr1NkCIvw3iXy_F2HDtX2fdHcfd6OHsL-DtUSKWVIFpqGZvXDEiuFluGsW4Ys6c4GHavVW4W3ihqi9YQQhq6-329JGlXWJZuzBEFc2avRb6olBpu9njyZN9guoAoHR_PT9QrxOoSYBkRP40opQW5RD9YMXd2ZHkCsCov9Bj8Jm7FFI78oreSS8PuezDhf7qkPnAcKqxl8A",
+  },
+];
+
+type SortMode = "rank" | "xp" | "streak";
+
 export function LeaderboardView() {
+  const [query, setQuery] = useState("");
+  const [sortMode, setSortMode] = useState<SortMode>("rank");
+
+  const visibleRows = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    const filtered = rankings.filter((row) => {
+      if (!normalized) {
+        return true;
+      }
+
+      return `${row.name} ${row.detail}`.toLowerCase().includes(normalized);
+    });
+
+    return [...filtered].sort((a, b) => {
+      if (sortMode === "xp") {
+        return b.xp - a.xp;
+      }
+
+      if (sortMode === "streak") {
+        return b.streak - a.streak;
+      }
+
+      return a.rank - b.rank;
+    });
+  }, [query, sortMode]);
+
+  const visiblePodium = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) {
+      return podium;
+    }
+
+    return podium.filter((user) => user.name.toLowerCase().includes(normalized));
+  }, [query]);
+
+  const visibleRivals = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) {
+      return rivals;
+    }
+
+    return rivals.filter((rival) => rival.name.toLowerCase().includes(normalized));
+  }, [query]);
+
+  const currentUser = rankings.find((row) => row.isCurrentUser) ?? rankings[0];
+  const topXp = Math.max(...podium.map((user) => user.xp));
+  const percentile = Math.round((currentUser.xp / topXp) * 100);
+
+  const formatNumber = (value: number) => value.toLocaleString("es-ES");
+
   return (
     <div className="flex min-h-screen bg-[#FAFAFA] text-[#264653]">
       <aside className="sticky top-0 hidden h-screen w-64 flex-col bg-[#264653] text-white/80 shadow-2xl lg:flex">
@@ -85,15 +179,15 @@ export function LeaderboardView() {
 
             <nav className="flex flex-col gap-1">
               {[
-                ["grid_view", "Panel"],
-                ["map", "Ruta"],
-                ["emoji_events", "Clasificacion"],
-                ["terminal", "Practica"],
-                ["rocket_launch", "Proyectos"],
-              ].map(([icon, label]) => (
-                <a
+                ["grid_view", "Panel", "/home"],
+                ["map", "Ruta", "/learningPath"],
+                ["emoji_events", "Clasificacion", "/leaderboard"],
+                ["terminal", "Practica", "/home"],
+                ["rocket_launch", "Proyectos", "/premium"],
+              ].map(([icon, label, href]) => (
+                <Link
                   key={label}
-                  href="#"
+                  href={href}
                   className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
                     label === "Clasificacion"
                       ? "bg-[#F4A261] text-white shadow-md shadow-[#F4A261]/20"
@@ -102,25 +196,25 @@ export function LeaderboardView() {
                 >
                   <span className="material-symbols-outlined">{icon}</span>
                   {label}
-                </a>
+                </Link>
               ))}
-              <a
-                href="#"
+              <Link
+                href="/premium"
                 className="mt-4 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/10 hover:text-white"
               >
                 <span className="material-symbols-outlined">settings</span>
                 Ajustes
-              </a>
+              </Link>
             </nav>
           </div>
 
-          <a
-            href="#"
+          <Link
+            href="/unlockPro"
             className="flex items-center gap-3 rounded-lg border-t border-white/10 px-3 pt-4 text-sm font-medium transition-colors hover:text-white"
           >
             <span className="material-symbols-outlined">help</span>
             Centro de Ayuda
-          </a>
+          </Link>
         </div>
       </aside>
 
@@ -132,19 +226,24 @@ export function LeaderboardView() {
               type="text"
               placeholder="Buscar usuarios..."
               className="h-10 w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
             />
           </div>
 
           <div className="ml-4 flex items-center gap-4 md:gap-6">
             <div className="hidden items-center gap-6 md:flex">
-              <a href="#" className="text-sm font-medium transition-colors hover:text-[#F4A261]">
+              <Link href="/home" className="text-sm font-medium transition-colors hover:text-[#F4A261]">
                 Cursos
-              </a>
-              <a href="#" className="text-sm font-medium transition-colors hover:text-[#F4A261]">
+              </Link>
+              <Link href="/premium" className="text-sm font-medium transition-colors hover:text-[#F4A261]">
                 Comunidad
-              </a>
+              </Link>
             </div>
-            <button className="h-10 rounded-xl bg-[#F4A261] px-4 text-sm font-bold text-white shadow-lg shadow-[#F4A261]/20 transition-all hover:brightness-110 md:px-6">
+            <button
+              className="h-10 rounded-xl bg-[#F4A261] px-4 text-sm font-bold text-white shadow-lg shadow-[#F4A261]/20 transition-all hover:brightness-110 md:px-6"
+              onClick={() => window.alert("Plan Pro en preparacion.")}
+            >
               Pasar a Pro
             </button>
             <div
@@ -166,10 +265,30 @@ export function LeaderboardView() {
             <p className="mt-2 text-base text-gray-500 md:text-lg">
               Compitiendo en la <span className="font-bold text-[#264653]">Liga Diamante</span> • Finaliza en 2d 14h
             </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[
+                ["rank", "Ordenar por Rango"],
+                ["xp", "Ordenar por XP"],
+                ["streak", "Ordenar por Racha"],
+              ].map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setSortMode(value as SortMode)}
+                  className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider transition-colors ${
+                    sortMode === value
+                      ? "bg-[#F4A261] text-white"
+                      : "bg-[#F4A261]/10 text-[#264653] hover:bg-[#F4A261]/20"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </section>
 
           <section className="mx-auto mb-16 grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-3 md:items-end">
-            {podium.map((user) => (
+            {visiblePodium.map((user) => (
               <article key={user.place} className="flex flex-col items-center">
                 <div className={`relative mb-4 ${user.highlight ? "md:mb-6 md:scale-110" : ""}`}>
                   <div
@@ -203,7 +322,7 @@ export function LeaderboardView() {
                 >
                   <p className={`truncate font-bold ${user.highlight ? "text-white" : "text-[#264653]"}`}>{user.name}</p>
                   <p className="text-lg font-black text-[#F4A261]">
-                    {user.xp} <span className="text-[10px]">XP</span>
+                    {formatNumber(user.xp)} <span className="text-[10px]">XP</span>
                   </p>
                   {user.highlight ? (
                     <div className="mt-2 flex items-center justify-center gap-1">
@@ -226,9 +345,9 @@ export function LeaderboardView() {
               <span className="hidden text-right md:block">Experiencia</span>
             </div>
 
-            {rankings.map((row) => (
+            {visibleRows.map((row) => (
               <div
-                key={row.rank}
+                key={row.id}
                 className={`grid grid-cols-[70px_1fr_90px] gap-4 border-b border-gray-100 px-4 py-5 transition-colors md:grid-cols-[80px_1fr_120px_160px] md:px-8 ${
                   row.isCurrentUser ? "bg-orange-50/60" : "hover:bg-orange-50/40"
                 }`}
@@ -250,14 +369,18 @@ export function LeaderboardView() {
                   </div>
                 </div>
                 <div className="flex items-center justify-end gap-1.5 text-sm font-bold text-[#264653]">
-                  {row.streak}
+                  {row.streak}d
                   <span className="material-symbols-outlined text-base text-orange-500">local_fire_department</span>
                 </div>
                 <div className="hidden items-center justify-end text-right md:flex">
-                  <p className="text-base font-black text-[#264653]">Liga Diamante • 2d 14h</p>
+                  <p className="text-base font-black text-[#264653]">{formatNumber(row.xp)} XP</p>
                 </div>
               </div>
             ))}
+
+            {visibleRows.length === 0 ? (
+              <div className="p-6 text-center text-sm font-semibold text-gray-500">No hay usuarios para esa busqueda.</div>
+            ) : null}
           </section>
 
           <section className="relative overflow-hidden rounded-3xl border border-white/5 bg-[#264653] p-8 text-white shadow-2xl shadow-[#264653]/20 md:p-10">
@@ -274,7 +397,10 @@ export function LeaderboardView() {
                 </p>
               </div>
               <div className="w-full md:w-auto">
-                <button className="w-full rounded-2xl bg-[#F4A261] px-10 py-4 font-black text-white shadow-xl shadow-[#F4A261]/30 transition-all hover:scale-105 md:w-auto">
+                <button
+                  className="w-full rounded-2xl bg-[#F4A261] px-10 py-4 font-black text-white shadow-xl shadow-[#F4A261]/30 transition-all hover:scale-105 md:w-auto"
+                  onClick={() => window.alert("Nuevos desafios disponibles pronto.")}
+                >
                   Ver Desafios
                 </button>
                 <p className="mt-3 text-center text-[10px] font-bold uppercase tracking-widest text-white/40">
@@ -296,7 +422,7 @@ export function LeaderboardView() {
               <span className="material-symbols-outlined text-xl text-[#F4A261]">trending_up</span>
             </div>
             <div className="flex items-end gap-2">
-              <p className="text-3xl font-black text-[#264653]">#4</p>
+              <p className="text-3xl font-black text-[#264653]">#{currentUser.rank}</p>
               <p className="mb-1 text-sm font-bold text-[#2A9D8F]">+2 desde ayer</p>
             </div>
           </div>
@@ -307,40 +433,31 @@ export function LeaderboardView() {
               <span className="material-symbols-outlined text-xl text-[#F4A261]">insights</span>
             </div>
             <div className="flex items-end gap-2">
-              <p className="text-3xl font-black text-[#264653]">1,240</p>
-              <p className="mb-1 text-sm font-bold text-gray-400">Top 5%</p>
+              <p className="text-3xl font-black text-[#264653]">{formatNumber(Math.round(currentUser.xp / 10))}</p>
+              <p className="mb-1 text-sm font-bold text-gray-400">Top {Math.max(1, 100 - percentile)}%</p>
             </div>
           </div>
         </div>
 
         <h3 className="mb-6 text-lg font-bold text-[#264653]">Rivales Recientes</h3>
         <div className="flex flex-col gap-6">
-          {[
-            [
-              "Alex Chen",
-              "+400 XP ganados",
-              "2m",
-              "https://lh3.googleusercontent.com/aida-public/AB6AXuCEG3M45mhWOlVRLlYx8XmRE-u0SSyiSzvlpTmcH36yKDY8sQGoqm5PTq1nxj1Y-xsK4nAyDrwUhjJjVcSgKE06R_K0g0DtNXRYkQwKYOrrqAOXIZh1cbFRr5w2-vj8hkqv-uVc_IzbDWZFt96Bnbjvga8-EA8rGLcQwRXD2y0CtMy-a0--B4o59WPT7JPpijmDFE_zIVmHxDJQSLr98GZC2yZjKy_FQLq6UDZAOwdzL29Ank9-N5CNS6hbpon0cMESfPsDjxMfsLk",
-            ],
-            [
-              "Sarah Miller",
-              "Cuestionario Completado",
-              "15m",
-              "https://lh3.googleusercontent.com/aida-public/AB6AXuBMq2d394iwHMpND87WkGoMMxM-5eIJ5dWZ3tvbCf4M6ykDvg6jf6YfxNgXpcxx1Ha9Jlr1NkCIvw3iXy_F2HDtX2fdHcfd6OHsL-DtUSKWVIFpqGZvXDEiuFluGsW4Ys6c4GHavVW4W3ihqi9YQQhq6-329JGlXWJZuzBEFc2avRb6olBpu9njyZN9guoAoHR_PT9QrxOoSYBkRP40opQW5RD9YMXd2ZHkCsCov9Bj8Jm7FFI78oreSS8PuezDhf7qkPnAcKqxl8A",
-            ],
-          ].map(([name, event, time, avatar]) => (
-            <div key={name} className="flex items-center gap-4">
+          {visibleRivals.map((rival) => (
+            <div key={rival.id} className="flex items-center gap-4">
               <div
                 className="h-11 w-11 rounded-full bg-cover bg-center ring-2 ring-[#F4A261] ring-offset-2"
-                style={{ backgroundImage: `url('${avatar}')` }}
+                style={{ backgroundImage: `url('${rival.avatar}')` }}
               />
               <div className="flex-1">
-                <p className="text-sm font-bold text-[#264653]">{name}</p>
-                <p className="mt-1 text-xs text-gray-500">{event}</p>
+                <p className="text-sm font-bold text-[#264653]">{rival.name}</p>
+                <p className="mt-1 text-xs text-gray-500">{rival.event}</p>
               </div>
-              <span className="text-[10px] font-bold text-gray-400">{time}</span>
+              <span className="text-[10px] font-bold text-gray-400">{rival.time}</span>
             </div>
           ))}
+
+          {visibleRivals.length === 0 ? (
+            <p className="text-sm font-semibold text-gray-500">Sin rivales que coincidan con la busqueda.</p>
+          ) : null}
         </div>
 
         <div className="mt-auto pt-8">

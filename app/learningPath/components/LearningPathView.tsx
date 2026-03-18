@@ -1,19 +1,80 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+
 type Milestone = {
+  id: number;
   title: string;
   status: "completed" | "in-progress" | "locked";
   side: "left" | "right";
   progress?: number;
 };
 
-const milestones: Milestone[] = [
-  { title: "Variables y Tipos de Datos", status: "completed", side: "left" },
-  { title: "Estructuras de Control", status: "completed", side: "right" },
-  { title: "Principios de POO", status: "in-progress", side: "left", progress: 65 },
-  { title: "Funciones Avanzadas de Java", status: "locked", side: "right" },
-  { title: "Proyecto: Sistema Bancario", status: "locked", side: "left" },
+const initialMilestones: Milestone[] = [
+  { id: 1, title: "Variables y Tipos de Datos", status: "completed", side: "left", progress: 100 },
+  { id: 2, title: "Estructuras de Control", status: "completed", side: "right", progress: 100 },
+  { id: 3, title: "Principios de POO", status: "in-progress", side: "left", progress: 65 },
+  { id: 4, title: "Funciones Avanzadas de Java", status: "locked", side: "right", progress: 0 },
+  { id: 5, title: "Proyecto: Sistema Bancario", status: "locked", side: "left", progress: 0 },
 ];
 
 export function LearningPathView() {
+  const [query, setQuery] = useState("");
+  const [milestones, setMilestones] = useState(initialMilestones);
+
+  const completedCount = milestones.filter((item) => item.status === "completed").length;
+  const inProgress = milestones.find((item) => item.status === "in-progress") ?? null;
+  const totalProgress = Math.round(
+    milestones.reduce((acc, item) => acc + (item.progress ?? 0), 0) / milestones.length,
+  );
+
+  const visibleMilestones = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+
+    if (!normalized) {
+      return milestones;
+    }
+
+    return milestones.filter((item) => item.title.toLowerCase().includes(normalized));
+  }, [milestones, query]);
+
+  const increaseProgress = () => {
+    if (!inProgress) {
+      return;
+    }
+
+    setMilestones((current) =>
+      current.map((item) => {
+        if (item.id !== inProgress.id) {
+          return item;
+        }
+
+        const next = Math.min(100, (item.progress ?? 0) + 10);
+        return { ...item, progress: next, status: next >= 100 ? "completed" : "in-progress" };
+      }),
+    );
+  };
+
+  const completeCurrentMilestone = () => {
+    setMilestones((current) => {
+      let unlocked = false;
+
+      return current.map((item) => {
+        if (item.status === "in-progress") {
+          return { ...item, status: "completed", progress: 100 };
+        }
+
+        if (!unlocked && item.status === "locked") {
+          unlocked = true;
+          return { ...item, status: "in-progress", progress: 10 };
+        }
+
+        return item;
+      });
+    });
+  };
+
   return (
     <div className="flex min-h-screen bg-[#FAFAFA] text-[#264653]">
       <aside className="sticky top-0 hidden h-screen w-64 flex-col bg-[#264653] text-white/80 shadow-2xl lg:flex">
@@ -31,14 +92,14 @@ export function LearningPathView() {
 
             <nav className="flex flex-col gap-1">
               {[
-                ["grid_view", "Panel"],
-                ["map", "Ruta"],
-                ["terminal", "Practica"],
-                ["rocket_launch", "Proyectos"],
-              ].map(([icon, label]) => (
-                <a
+                ["grid_view", "Panel", "/home"],
+                ["map", "Ruta", "/learningPath"],
+                ["terminal", "Practica", "/home"],
+                ["rocket_launch", "Proyectos", "/premium"],
+              ].map(([icon, label, href]) => (
+                <Link
                   key={label}
-                  href="#"
+                  href={href}
                   className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
                     label === "Ruta"
                       ? "bg-[#F4A261] text-white shadow-md shadow-[#F4A261]/20"
@@ -47,25 +108,25 @@ export function LearningPathView() {
                 >
                   <span className="material-symbols-outlined">{icon}</span>
                   {label}
-                </a>
+                </Link>
               ))}
-              <a
-                href="#"
+              <Link
+                href="/premium"
                 className="mt-4 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-white/10 hover:text-white"
               >
                 <span className="material-symbols-outlined">settings</span>
                 Ajustes
-              </a>
+              </Link>
             </nav>
           </div>
 
-          <a
-            href="#"
+          <Link
+            href="/unlockPro"
             className="flex items-center gap-3 rounded-lg border-t border-white/10 px-3 pt-4 text-sm font-medium transition-colors hover:text-white"
           >
             <span className="material-symbols-outlined">help</span>
             Centro de Ayuda
-          </a>
+          </Link>
         </div>
       </aside>
 
@@ -77,17 +138,19 @@ export function LearningPathView() {
               type="text"
               placeholder="Buscar lecciones, conceptos..."
               className="h-10 w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
             />
           </div>
 
           <div className="ml-4 flex items-center gap-4 md:gap-6">
             <div className="hidden items-center gap-6 md:flex">
-              <a href="#" className="text-sm font-medium transition-colors hover:text-[#F4A261]">
+              <Link href="/home" className="text-sm font-medium transition-colors hover:text-[#F4A261]">
                 Explorar
-              </a>
-              <a href="#" className="text-sm font-medium transition-colors hover:text-[#F4A261]">
+              </Link>
+              <Link href="/premium" className="text-sm font-medium transition-colors hover:text-[#F4A261]">
                 Comunidad
-              </a>
+              </Link>
             </div>
             <button className="h-10 rounded-xl bg-[#F4A261] px-4 text-sm font-bold text-white shadow-lg shadow-[#F4A261]/20 transition-all hover:brightness-110 md:px-6">
               Ser Pro
@@ -117,9 +180,9 @@ export function LearningPathView() {
 
           <section className="mb-16 grid grid-cols-1 gap-6 md:grid-cols-3">
             {[
-              ["Racha de Dias", "12 Dias", "local_fire_department", "#F59E0B", "Sigue asi!"],
-              ["Total XP", "15,400", "stars", "#F4A261", "+450 hoy"],
-              ["Progreso", "4/12", "check_circle", "#0D9488", "Modulos Completados"],
+              ["Racha de Dias", `${Math.max(1, completedCount * 3)} Dias`, "local_fire_department", "#F59E0B", "Sigue asi!"],
+              ["Total XP", `${(completedCount * 3500 + totalProgress * 10).toLocaleString("es-ES")}`, "stars", "#F4A261", "+450 hoy"],
+              ["Progreso", `${completedCount}/${milestones.length}`, "check_circle", "#0D9488", "Modulos Completados"],
             ].map(([title, value, icon, iconColor, footer]) => (
               <article
                 key={title}
@@ -146,7 +209,7 @@ export function LearningPathView() {
             </h2>
 
             <div className="relative flex flex-col items-center gap-20">
-              {milestones.map((item, index) => {
+              {visibleMilestones.map((item, index) => {
                 const isCompleted = item.status === "completed";
                 const isInProgress = item.status === "in-progress";
                 const isLocked = item.status === "locked";
@@ -194,6 +257,22 @@ export function LearningPathView() {
                             <span className="text-gray-400">Paso 3 de 4</span>
                             <span className="text-[#F4A261]">{item.progress}%</span>
                           </div>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <button
+                              type="button"
+                              onClick={increaseProgress}
+                              className="rounded-lg bg-[#F4A261]/10 px-3 py-1 text-[11px] font-bold text-[#F4A261] hover:bg-[#F4A261]/20"
+                            >
+                              Continuar +10%
+                            </button>
+                            <button
+                              type="button"
+                              onClick={completeCurrentMilestone}
+                              className="rounded-lg bg-[#264653] px-3 py-1 text-[11px] font-bold text-white hover:bg-[#1f3a45]"
+                            >
+                              Completar modulo
+                            </button>
+                          </div>
                         </>
                       ) : null}
                     </div>
@@ -208,6 +287,12 @@ export function LearningPathView() {
                   </div>
                 );
               })}
+
+              {visibleMilestones.length === 0 ? (
+                <p className="rounded-xl bg-white p-4 text-sm font-semibold text-gray-500 shadow-sm">
+                  No encontramos modulos con esa busqueda.
+                </p>
+              ) : null}
             </div>
           </section>
 
@@ -229,7 +314,11 @@ export function LearningPathView() {
                 </p>
               </div>
 
-              <button className="rounded-2xl bg-white px-10 py-4 font-black text-[#F4A261] shadow-xl transition-all hover:scale-105 hover:shadow-white/20">
+              <button
+                type="button"
+                onClick={increaseProgress}
+                className="rounded-2xl bg-white px-10 py-4 font-black text-[#F4A261] shadow-xl transition-all hover:scale-105 hover:shadow-white/20"
+              >
                 Reanudar Aprendizaje
               </button>
             </div>
