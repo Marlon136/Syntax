@@ -21,7 +21,7 @@ export default function Stats() {
               {s[0]}
             </p>
 
-            <p className="text-3xl font-bold text-[#264653]">
+            <p className="text-3xl font-bold text-[#E76F51]">
               {s[1]}
             </p>
 

@@ -1,4 +1,6 @@
 import "./globals.css";
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
 
 export const metadata = {
   title: "Syntax",
@@ -12,8 +14,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-[#f5f5f5]">
+      <body>
+
+        <Navbar />
+
         {children}
+
+        <Footer />
+
       </body>
     </html>
   );

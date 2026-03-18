@@ -5,25 +5,25 @@ export default function Footer() {
       <div className="grid grid-cols-4 gap-6">
 
         <div>
-          <p className="font-bold text-[#264653]">Syntax</p>
+          <p className="font-bold text-[#E76F51]">Syntax</p>
           <p>Learning platform</p>
         </div>
 
         <div>
-          <p className="font-bold text-[#264653]">Platform</p>
+          <p className="font-bold text-[#E76F51]">Platform</p>
           <p>Java</p>
           <p>Python</p>
           <p>Web</p>
         </div>
 
         <div>
-          <p className="font-bold text-[#264653]">Company</p>
+          <p className="font-bold text-[#E76F51]">Company</p>
           <p>About</p>
           <p>Careers</p>
         </div>
 
         <div>
-          <p className="font-bold text-[#264653]">Connect</p>
+          <p className="font-bold text-[#E76F51]">Connect</p>
           <p>Twitter</p>
           <p>GitHub</p>
         </div>
