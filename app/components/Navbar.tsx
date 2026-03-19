@@ -1,34 +1,56 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
+import { useState } from "react";
 
 export default function Navbar() {
 
   const router = useRouter();
   const pathname = usePathname();
 
+  const [isLogged, setIsLogged] = useState<boolean>(() =>
+    typeof document !== "undefined" &&
+    document.cookie.includes("syntax-auth=1")
+  );
+
+  const [email, setEmail] = useState<string | null>(() =>
+    typeof window !== "undefined"
+      ? localStorage.getItem("syntax-user-email")
+      : null
+  );
+
+
+
+  function logout() {
+
+    document.cookie =
+      "syntax-auth=; Path=/; Max-Age=0";
+
+    localStorage.removeItem(
+      "syntax-user-email"
+    );
+
+    setIsLogged(false);
+    setEmail(null);
+
+    router.push("/");
+  }
+
+
+
   function goToCourses() {
-
-    if (pathname !== "/") {
-      router.push("/");
-
-      setTimeout(() => {
-        const el = document.getElementById("courses");
-        el?.scrollIntoView({ behavior: "smooth" });
-      }, 300);
-
-    } else {
-
-      const el = document.getElementById("courses");
-      el?.scrollIntoView({ behavior: "smooth" });
-
-    }
-
+    router.push("/premium");
   }
 
-  function goToPricing() {
-    router.push("/unlockPro");
+
+  
+
+  function goToPath() {
+    router.push("/learningPath");
   }
+
+
+
 
   return (
     <nav className="fixed w-full h-17 flex justify-between items-center px-12 py-5 bg-[#fff8f3] border-b border-[#264653]/20">
@@ -49,7 +71,9 @@ export default function Navbar() {
           Courses
         </button>
 
-        <button className="hover:text-[#E76F51] transition">
+        <button 
+        onClick={goToPath}
+        className="hover:text-[#E76F51] transition">
           Paths
         </button>
       </div>

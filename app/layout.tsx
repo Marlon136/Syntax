@@ -17,8 +17,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body>
+    <html lang="en">
+
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=optional"
+        />
+
+      </head>
+
+      <body className="bg-neutral-50">
+  
 
         <Navbar />
         <br></br> <br></br>
@@ -27,6 +37,7 @@ export default function RootLayout({
         <Footer />
 
       </body>
+
     </html>
   );
 }

@@ -11,6 +11,7 @@ export default function LearningPathPage() {
 	return (
 		<main className={lexend.className}>
 			<LearningPathView />
+
 		</main>
 	);
 }

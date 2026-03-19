@@ -1,15 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 
 export default function Hero() {
 
-
-  function goToCourses() {
-    const el = document.getElementById("courses");
-    el?.scrollIntoView({ behavior: "smooth" });
-  }
+  const router = useRouter();
 
   return (
     <section className="flex justify-between items-center px-16 py-20 bg-neutral-50">
@@ -29,7 +26,7 @@ export default function Hero() {
         <div className="flex gap-4">
 
           <button
-            onClick={goToCourses}
+            onClick={() => router.push("/login")}
             className="bg-[#f0a262] hover:bg-[#d45d42] text-white px-6 py-3 rounded-lg transition"
           >
             Start Learning
