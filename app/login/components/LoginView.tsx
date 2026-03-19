@@ -80,6 +80,7 @@ export function LoginView() {
 
     setTimeout(() => {
       router.push(redirectTo);
+      router.refresh();
     }, 500);
   };
 

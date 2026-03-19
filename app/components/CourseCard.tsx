@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import CourseModal from "./CourseModal";
 
 export default function CourseCard({
   title,
@@ -17,43 +16,131 @@ export default function CourseCard({
   img: string;
   content: string[];
 }) {
-
-  const [open, setOpen] = useState(false);
+  const [flipped, setFlipped] = useState(false);
 
   return (
-    <div className="bg-neutral-50 rounded-xl shadow-md p-4 border border-neutral-200">
-
-      <Image
-        src={img}
-        alt="course"
-        width={150}
-        height={120}
-        className="rounded mx-auto h-32 object-cover"
-      />
-
-      <h3 className="font-bold mt-3 text-[#264653]">
-        {title}
-      </h3>
-
-      <p className="width: 100% margin-0">
-      <span className="float-left text-[#264653] mt-2">{lessons}</span>
-      <span className="float-right text-[#E76F51] mt-2">{price}</span>
-      </p>
-
-      <button
-        onClick={() => setOpen(true)}
-        className="mt-3 w-full bg-[#2a4d60] hover:bg-[#47a599] text-white px-6 py-3 rounded-lg transition"
+    <div
+      style={{
+        perspective: "1000px",
+        width: "350px",
+        height: "320px"
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "relative",
+          transition: "transform 0.5s",
+          transformStyle: "preserve-3d",
+          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+        }}
       >
-        View Course
-      </button>
+        {/* FRONT */}
+        <div
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            backfaceVisibility: "hidden",
+            background: "#fafafa",
+            borderRadius: "12px",
+            padding: "16px",
+            border: "1px solid #e5e5e5",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+          }}
+        >
+          <Image
+            src={img}
+            alt="course"
+            width={150}
+            height={120}
+            style={{
+              borderRadius: "8px",
+              display: "block",
+              margin: "0 auto",
+              objectFit: "cover",
+              height: "120px",
+            }}
+          />
 
-      <CourseModal
-        open={open}
-        onClose={() => setOpen(false)}
-        title={title}
-        content={content}
-      />
+          <h3 style={{ fontWeight: "bold", marginTop: "10px", color: "#264653" }}>
+            {title}
+          </h3>
 
+          <div style={{ width: "100%", marginTop: "8px" }}>
+            <span style={{ float: "left", color: "#264653" }}>
+              {lessons}
+            </span>
+            <span style={{ float: "right", color: "#E76F51" }}>
+              {price}
+            </span>
+          </div>
+
+          <button
+            onClick={() => setFlipped(true)}
+            style={{
+              marginTop: "40px",
+              width: "100%",
+              background: "#2a4d60",
+              color: "white",
+              padding: "10px",
+              borderRadius: "8px",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            View Course
+          </button>
+        </div>
+
+        {/* BACK */}
+        <div
+              style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              backfaceVisibility: "hidden",
+              transform: "rotateY(180deg)",
+              background: "#264653",
+              color: "white",
+              borderRadius: "12px",
+              padding: "16px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+
+              display: "flex",
+              flexDirection: "column",
+            }}
+        >
+          <h3>{title}</h3>
+
+          <h3>{title}</h3>
+
+        <div style={{ flex: 1 }}>
+          {content.map((item, i) => (
+            <p key={i}>• {item}</p>
+          ))}
+        </div>
+
+
+
+          <button
+            onClick={() => setFlipped(false)}
+            style={{
+              marginTop: "20px",
+              width: "100%",
+              background: "#47a599",
+              color: "white",
+              padding: "10px",
+              borderRadius: "8px",
+              border: "#47a599",
+              cursor: "pointer",
+            }}
+          >
+            Back
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

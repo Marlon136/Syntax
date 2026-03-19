@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import Features from "./pricing/Features";
 import { useRouter } from "next/navigation";
 
@@ -38,5 +36,7 @@ export default function Subscribe() {
       </div>
 
     </section>
+
+  
   );
 }

@@ -1,23 +1,19 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
 
   const router = useRouter();
-  const pathname = usePathname();
 
-  const [isLogged, setIsLogged] = useState<boolean>(() =>
+  const isLogged =
     typeof document !== "undefined" &&
-    document.cookie.includes("syntax-auth=1")
-  );
+    document.cookie.includes("syntax-auth=1");
 
-  const [email, setEmail] = useState<string | null>(() =>
+  const email =
     typeof window !== "undefined"
       ? localStorage.getItem("syntax-user-email")
-      : null
-  );
+      : null;
 
 
 
@@ -30,10 +26,8 @@ export default function Navbar() {
       "syntax-user-email"
     );
 
-    setIsLogged(false);
-    setEmail(null);
-
     router.push("/");
+    router.refresh();
   }
 
 
@@ -46,63 +40,74 @@ export default function Navbar() {
   }
 
   function goToSubscribe() {
-    router.push("/subscribe")
+    router.push("/subscribe");
   }
-
 
 
 
   return (
     <nav className="fixed w-full h-17 flex justify-between items-center px-12 py-5 bg-[#fff8f3] border-b border-[#264653]/20">
-    <div className="flex items-center gap-10">
-      <div
-        onClick={() => router.push("/")}
-        className="text-3xl font-bold text-[#2a4d60] cursor-pointer"
-      >
-        Sy<span className="text-[#47a599]">n</span><span className="text-[#E76F51]">taX</span>
 
-      </div>
+      <div className="flex items-center gap-10">
 
-      <div className="flex gap-6 text-l text-[#264653]">
-        <button
-          onClick={goToCourses}
-          className="hover:text-[#E76F51] transition"
+        {/* LOGO */}
+        <div
+          onClick={() => router.push("/")}
+          className="text-3xl font-bold text-[#2a4d60] cursor-pointer"
         >
-          Courses
-        </button>
+          Sy<span className="text-[#47a599]">n</span>
+          <span className="text-[#E76F51]">taX</span>
+        </div>
 
-        <button 
-        onClick={goToPath}
-        className="hover:text-[#E76F51] transition">
-          Paths
-        </button>
 
-        <button 
-        onClick={goToSubscribe}
-        className="hover:text-[#E76F51] transition">
-          Get Pro
-        </button>
+        {/* SOLO SI ESTA LOGUEADO */}
+        {isLogged && (
+
+          <div className="flex gap-6 text-l text-[#264653]">
+
+            <button
+              onClick={goToCourses}
+              className="hover:text-[#E76F51]"
+            >
+              Courses
+            </button>
+
+            <button
+              onClick={goToPath}
+              className="hover:text-[#E76F51]"
+            >
+              Paths
+            </button>
+
+            <button
+              onClick={goToSubscribe}
+              className="hover:text-[#E76F51]"
+            >
+              Get Pro
+            </button>
+
+          </div>
+
+        )}
+
       </div>
 
 
-
-    </div>
 
       <div className="flex gap-3">
 
-      {!isLogged && (
+        {!isLogged && (
 
           <>
             <button
               onClick={() => router.push("/login")}
-              className="text-l text-[#264653] hover:text-[#47a599] transition"
             >
               Log in
             </button>
 
             <button
               onClick={() => router.push("/premium")}
-              className="bg-[#E76F51] hover:bg-[#d45d42] text-white px-4 py-2 rounded-lg transition"
+              className="bg-[#E76F51] text-white px-4 py-2 rounded-lg"
             >
               Sign Up
             </button>
@@ -113,10 +118,8 @@ export default function Navbar() {
         {isLogged && (
 
           <>
-            <span className="text-[#264653] font-semibold">
-
+            <span>
               {email || "User"}
-
             </span>
 
             <button
@@ -130,7 +133,7 @@ export default function Navbar() {
         )}
 
       </div>
-    
+
     </nav>
   );
 }
