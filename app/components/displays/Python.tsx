@@ -1,11 +1,11 @@
-import PremiumContent from "../premium/PremiumContent";
-import PremiumHero from "../premium/PremiumHero";
+import PremiumContentPython from "../premium/Python";
+import PythonHero from "../premium/PythonHero";
 
 export default function Python(){
     return (
         <div>
-            <PremiumHero/>
-            <PremiumContent/>
+            <PythonHero/>
+            <PremiumContentPython/>
         </div>
         
     );

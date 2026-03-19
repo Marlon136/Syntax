@@ -1,11 +1,12 @@
-import PremiumContent from "../premium/PremiumContent";
-import PremiumHero from "../premium/PremiumHero";
+import PremiumContentJS from "../premium/Js";
+import JsHero from "../premium/JsHero";
+
 
 export default function JS(){
     return (
         <div>
-            <PremiumHero/>
-            <PremiumContent/>
+            <JsHero/>
+            <PremiumContentJS/>
         </div>
         
     );

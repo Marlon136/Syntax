@@ -1,11 +1,12 @@
-import PremiumContent from "../premium/PremiumContent";
-import PremiumHero from "../premium/PremiumHero";
+import PremiumContentJava from "../premium/Java";
+import JavaHero from "../premium/JavaHero";
+
 
 export default function Java(){
     return (
         <div>
-            <PremiumHero/>
-            <PremiumContent/>
+            <JavaHero/>
+            <PremiumContentJava/>
         </div>
         
     );

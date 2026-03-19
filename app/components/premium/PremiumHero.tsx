@@ -1,4 +1,4 @@
-export default function PremiumHero() {
+export default function PremiumHeroPyhon() {
   return (
     <section className="px-16 py-10 bg-neutral-50">
 
