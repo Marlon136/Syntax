@@ -1,19 +1,35 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Navbar() {
 
   const router = useRouter();
 
-  const isLogged =
-    typeof document !== "undefined" &&
-    document.cookie.includes("syntax-auth=1");
 
-  const email =
-    typeof window !== "undefined"
-      ? localStorage.getItem("syntax-user-email")
-      : null;
+  const [mounted, setMounted] = useState(false);
+
+
+  const [isLogged] = useState(() => {
+    if (typeof document === "undefined") return false;
+    return document.cookie.includes("syntax-auth=1");
+  });
+
+
+  const [email] = useState(() => {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem("syntax-user-email");
+  });
+
+
+  // mount guard
+  if (!mounted) {
+    if (typeof window !== "undefined") {
+      setMounted(true);
+    }
+    return null;
+  }
 
 
 
@@ -44,13 +60,11 @@ export default function Navbar() {
   }
 
 
-
   return (
     <nav className="fixed w-full h-17 flex justify-between items-center px-12 py-5 bg-[#fff8f3] border-b border-[#264653]/20">
 
       <div className="flex items-center gap-10">
 
-        {/* LOGO */}
         <div
           onClick={() => router.push("/")}
           className="text-3xl font-bold text-[#2a4d60] cursor-pointer"
@@ -60,34 +74,22 @@ export default function Navbar() {
         </div>
 
 
-        {/* SOLO SI ESTA LOGUEADO */}
         {isLogged && (
-
           <div className="flex gap-6 text-l text-[#264653]">
 
-            <button
-              onClick={goToCourses}
-              className="hover:text-[#E76F51]"
-            >
+            <button onClick={goToCourses}>
               Courses
             </button>
 
-            <button
-              onClick={goToPath}
-              className="hover:text-[#E76F51]"
-            >
+            <button onClick={goToPath}>
               Paths
             </button>
 
-            <button
-              onClick={goToSubscribe}
-              className="hover:text-[#E76F51]"
-            >
+            <button onClick={goToSubscribe}>
               Get Pro
             </button>
 
           </div>
-
         )}
 
       </div>
@@ -97,7 +99,6 @@ export default function Navbar() {
       <div className="flex gap-3">
 
         {!isLogged && (
-
           <>
             <button
               onClick={() => router.push("/login")}
@@ -112,15 +113,12 @@ export default function Navbar() {
               Sign Up
             </button>
           </>
-
         )}
 
-        {isLogged && (
 
+        {isLogged && (
           <>
-            <span>
-              {email || "User"}
-            </span>
+            <span>{email || "User"}</span>
 
             <button
               onClick={logout}
@@ -129,7 +127,6 @@ export default function Navbar() {
               Log out
             </button>
           </>
-
         )}
 
       </div>
