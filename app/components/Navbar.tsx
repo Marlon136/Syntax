@@ -77,17 +77,51 @@ export default function Navbar() {
           Paths
         </button>
       </div>
+
+
+
     </div>
 
       <div className="flex gap-3">
 
-        <button className="text-l text-[#264653] hover:text-[#47a599] transition">
-          Log in
-        </button>
+      {!isLogged && (
 
-        <button className="bg-[#E76F51] hover:bg-[#d45d42] text-white px-4 py-2 rounded-lg transition">
-          Sign Up
-        </button>
+          <>
+            <button
+              onClick={() => router.push("/login")}
+              className="text-l text-[#264653] hover:text-[#47a599] transition"
+            >
+              Log in
+            </button>
+
+            <button
+              onClick={() => router.push("/premium")}
+              className="bg-[#E76F51] hover:bg-[#d45d42] text-white px-4 py-2 rounded-lg transition"
+            >
+              Sign Up
+            </button>
+          </>
+
+        )}
+
+        {isLogged && (
+
+          <>
+            <span className="text-[#264653] font-semibold">
+
+              {email || "User"}
+
+            </span>
+
+            <button
+              onClick={logout}
+              className="bg-[#264653] text-white px-4 py-2 rounded-lg"
+            >
+              Log out
+            </button>
+          </>
+
+        )}
 
       </div>
     
