@@ -16,7 +16,7 @@ export default function Plans() {
   return (
     <section id="plans" className="px-16 py-20 bg-neutral-50 text-center">
 
-      <h2 className="text-2xl font-bold text-[#264653] mb-10">
+      <h2 className="text-3xl font-bold text-[#264653] mb-10">
         Choose Your Plan
       </h2>
 

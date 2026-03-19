@@ -32,7 +32,7 @@ export default function Navbar() {
 
 
   function goToCourses() {
-    router.push("/premium");
+    router.push("/coursesDisplay");
   }
 
   function goToPath() {
