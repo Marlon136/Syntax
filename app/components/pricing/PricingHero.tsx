@@ -21,7 +21,7 @@ export default function PricingHero() {
 
         <p className="text-sm text-[#47a599] font-semibold mb-3">
           LEVEL UP YOUR CODING SKILLS
-        </p>
+        </p><br></br>
 
         <h1 className="text-5xl font-bold text-[#2a4d60] mb-5">
           Unlock Your Full Potential with

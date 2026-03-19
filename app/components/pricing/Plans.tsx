@@ -26,7 +26,7 @@ export default function Plans() {
 
         <div className="w-80 bg-[#fff8f3] p-6 rounded-xl border-2 border-[#E76F51] shadow-lg">
 
-          <p className="font-bold text-[#264653]">Free</p>
+          <p className="font-bold text-[#264653]">Free</p><br></br>
 
           <p className="text-3xl font-bold text-[#264653]">
             $0
@@ -44,18 +44,18 @@ export default function Plans() {
         <div className="w-80 bg-[#2a4d60] p-6 rounded-xl shadow-lg">
 
           <p className="font-bold text-[#ffffff]">
-            Pro
-          </p>
+            Java Bootcamp Pro
+          </p><br></br>
 
-          <p className="text-3xl font-bold text-[#ffffff]">
-            $9
+          <p className="text-3xl text-[#ffffff]">
+            $59.99
           </p>
 
           <button
             onClick={checkout}
             className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
           >
-            Get Pro
+            Get Plan
           </button>
 
         </div>
@@ -65,39 +65,39 @@ export default function Plans() {
         <div className="w-80 bg-[#2a4d60] p-6 rounded-xl shadow-lg">
 
           <p className="font-bold text-[#ffffff]">
-            Pro
-          </p>
+            Python Mastery Pro
+          </p><br></br>
 
-          <p className="text-3xl font-bold text-[#ffffff]">
-            $9
+          <p className="text-3xl text-[#ffffff]">
+            $49.99
           </p>
 
           <button
             onClick={checkout}
             className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
           >
-            Get Pro
+            Get Plan
           </button>
 
         </div>
 
-        {/* PRO  JAVA*/}
+        {/* PRO  JAVA SCRIPT*/}
 
         <div className="w-80 bg-[#2a4d60] p-6 rounded-xl shadow-lg">
 
           <p className="font-bold text-[#ffffff]">
-            Pro
-          </p>
+            JavaScript Pro
+          </p><br></br>
 
-          <p className="text-3xl font-bold text-[#ffffff]">
-            $9
+          <p className="text-3xl text-[#ffffff]">
+            $39.99
           </p>
 
           <button
             onClick={checkout}
             className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
           >
-            Get Pro
+            Get Plan
           </button>
 
         </div>

@@ -9,10 +9,8 @@ export default function Page() {
   return (
     <>
       <PricingHero />
-      <Separator/> <br></br>
-      
+      <Separator/> 
       <Plans />
-      
       <PlanTable />
 
       <br></br>
