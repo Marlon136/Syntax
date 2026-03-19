@@ -112,9 +112,9 @@ export default function CourseCard({
               flexDirection: "column",
             }}
         >
-          <h3>{title}</h3>
+          <h2 className="font-bold text-[#47a599]">{title}</h2>
 
-          <h3>{title}</h3>
+          <p>Con este curso aprenderás:</p>
 
         <div style={{ flex: 1 }}>
           {content.map((item, i) => (
