@@ -17,7 +17,7 @@ export default function Subscribe() {
       <div className="bg-neutral-50 rounded-xl shadow-md p-6 border border-[#264653]/20 text-center">
         <Features />
         <h3 className="text-2xl font-bold mb-3 text-[#264653]">
-          Ready to level up your coding skills?
+          Ready to <span className="text-[#E76F51]">level up</span> your coding skills?
         </h3>
 
         <p className="mb-6 text-[#264653]/80">
@@ -32,7 +32,7 @@ export default function Subscribe() {
           >
             Get SyntaX Pro
           </button>
-          <br></br><br></br>
+          
         </div>
 
       </div>

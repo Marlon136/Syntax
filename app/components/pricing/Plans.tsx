@@ -24,7 +24,7 @@ export default function Plans() {
 
         {/* FREE */}
 
-        <div className="w-80 bg-white p-6 rounded-xl border border-neutral-200">
+        <div className="w-80 bg-[#fff8f3] p-6 rounded-xl border-2 border-[#E76F51] shadow-lg">
 
           <p className="font-bold text-[#264653]">Free</p>
 
@@ -32,30 +32,72 @@ export default function Plans() {
             $0
           </p>
 
-          <button className="mt-4 w-full border border-[#264653]/30 py-2 rounded">
+          <button className="mt-4 w-full border border-[#E76F51]/30 py-2 rounded text-[#264653]">
             Current Plan
           </button>
 
         </div>
 
 
-        {/* PRO */}
+        {/* PRO  JAVA*/}
 
-        <div className="w-80 bg-white p-6 rounded-xl border-2 border-[#E76F51] shadow-lg">
+        <div className="w-80 bg-[#2a4d60] p-6 rounded-xl shadow-lg">
 
-          <p className="font-bold text-[#264653]">
+          <p className="font-bold text-[#ffffff]">
             Pro
           </p>
 
-          <p className="text-3xl font-bold text-[#264653]">
+          <p className="text-3xl font-bold text-[#ffffff]">
             $9
           </p>
 
           <button
             onClick={checkout}
-            className="mt-4 w-full bg-[#E76F51] hover:bg-[#d45d42] text-white py-2 rounded"
+            className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
           >
-            Go Pro
+            Get Pro
+          </button>
+
+        </div>
+
+        {/* PRO  PYTHON*/}
+
+        <div className="w-80 bg-[#2a4d60] p-6 rounded-xl shadow-lg">
+
+          <p className="font-bold text-[#ffffff]">
+            Pro
+          </p>
+
+          <p className="text-3xl font-bold text-[#ffffff]">
+            $9
+          </p>
+
+          <button
+            onClick={checkout}
+            className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
+          >
+            Get Pro
+          </button>
+
+        </div>
+
+        {/* PRO  JAVA*/}
+
+        <div className="w-80 bg-[#2a4d60] p-6 rounded-xl shadow-lg">
+
+          <p className="font-bold text-[#ffffff]">
+            Pro
+          </p>
+
+          <p className="text-3xl font-bold text-[#ffffff]">
+            $9
+          </p>
+
+          <button
+            onClick={checkout}
+            className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
+          >
+            Get Pro
           </button>
 
         </div>

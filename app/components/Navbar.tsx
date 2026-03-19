@@ -37,16 +37,16 @@ export default function Navbar() {
   }
 
 
-
   function goToCourses() {
     router.push("/premium");
   }
 
-
-  
-
   function goToPath() {
     router.push("/learningPath");
+  }
+
+  function goToSubscribe() {
+    router.push("/subscribe")
   }
 
 
@@ -75,6 +75,12 @@ export default function Navbar() {
         onClick={goToPath}
         className="hover:text-[#E76F51] transition">
           Paths
+        </button>
+
+        <button 
+        onClick={goToSubscribe}
+        className="hover:text-[#E76F51] transition">
+          Get Pro
         </button>
       </div>
 

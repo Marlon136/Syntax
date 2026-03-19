@@ -1,6 +1,6 @@
 export default function PlanTable() {
   return (
-    <section className="px-16 py-20 bg-neutral-50">
+    <section className="px-16 py-20 bg-[#fff8f3] rounded-xl border-2 w-1/2 mx-auto">
 
       <h2 className="text-center text-2xl font-bold text-[#264653] mb-10">
         Detailed Plan Comparison
@@ -11,8 +11,8 @@ export default function PlanTable() {
         <thead>
           <tr className="text-[#264653] border-b">
             <th className="text-left py-3">Feature</th>
-            <th>Free</th>
-            <th className="text-[#E76F51]">Pro</th>
+            <th className="text-left">Free</th>
+            <th className="text-left text-[#E76F51]">Pro</th>
           </tr>
         </thead>
 

@@ -16,7 +16,8 @@ export default function Courses() {
 
           <CourseCard
             title="Java Bootcamp"
-            price="$59.99"
+            lessons="60+ Lessons"
+            price="Pro: $59.99"
             img="/Java.jpg"
             content={[
               "OOP",
@@ -28,7 +29,8 @@ export default function Courses() {
 
           <CourseCard
             title="Python Mastery"
-            price="$49.99"
+            lessons="120+ Lessons"
+            price="Pro: $49.99"
             img="/Py.jpg"
             content={[
               "Variables",
@@ -40,7 +42,8 @@ export default function Courses() {
 
           <CourseCard
             title="JavaScript"
-            price="$39.99"
+            lessons="40+ Lessons"
+            price="Pro: $39.99"
             img="/jsh.jpg"
             content={[
               "DOM",

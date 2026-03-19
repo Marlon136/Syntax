@@ -7,11 +7,13 @@ import CourseModal from "./CourseModal";
 export default function CourseCard({
   title,
   price,
+  lessons,
   img,
   content,
 }: {
   title: string;
   price: string;
+  lessons: string;
   img: string;
   content: string[];
 }) {
@@ -33,8 +35,9 @@ export default function CourseCard({
         {title}
       </h3>
 
-      <p className="text-[#E76F51] font-bold mt-2">
-        {price}
+      <p className="width: 100% margin-0">
+      <span className="float-left text-[#264653] mt-2">{lessons}</span>
+      <span className="float-right text-[#E76F51] mt-2">{price}</span>
       </p>
 
       <button
