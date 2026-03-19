@@ -1,36 +1,37 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
 
   const router = useRouter();
+  const pathname = usePathname(); // 👈 detecta cambio de página
 
-
+  const [isLogged, setIsLogged] = useState(false);
+  const [email, setEmail] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
 
-  const [isLogged] = useState(() => {
-    if (typeof document === "undefined") return false;
-    return document.cookie.includes("syntax-auth=1");
-  });
+  useEffect(() => {
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+
+    const cookie =
+      document.cookie.includes("syntax-auth=1");
+
+    setIsLogged(cookie);
+
+    const storedEmail =
+      localStorage.getItem("syntax-user-email");
+
+    setEmail(storedEmail);
+
+  }, [pathname]); // 👈 se ejecuta cada vez que cambias de página
 
 
-  const [email] = useState(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("syntax-user-email");
-  });
-
-
-  // mount guard
-  if (!mounted) {
-    if (typeof window !== "undefined") {
-      setMounted(true);
-    }
-    return null;
-  }
-
+  if (!mounted) return null;
 
 
   function logout() {
@@ -41,6 +42,8 @@ export default function Navbar() {
     localStorage.removeItem(
       "syntax-user-email"
     );
+
+    setIsLogged(false);
 
     router.push("/");
     router.refresh();
@@ -61,7 +64,7 @@ export default function Navbar() {
 
 
   return (
-    <nav className="fixed w-full h-17 flex justify-between items-center px-12 py-5 bg-[#fff8f3] border-b border-[#264653]/20">
+    <nav className="fixed w-full h-16 flex justify-between items-center px-12 py-5 bg-[#fff8f3] border-b border-[#264653]/20">
 
       <div className="flex items-center gap-10">
 
@@ -95,19 +98,16 @@ export default function Navbar() {
       </div>
 
 
-
       <div className="flex gap-3">
 
         {!isLogged && (
           <>
-            <button
-              onClick={() => router.push("/login")}
-            >
+            <button onClick={() => router.push("/login")}>
               Log in
             </button>
 
             <button
-              onClick={() => router.push("/premium")}
+              onClick={() => router.push("/login")}
               className="bg-[#E76F51] text-white px-4 py-2 rounded-lg"
             >
               Sign Up
@@ -118,7 +118,7 @@ export default function Navbar() {
 
         {isLogged && (
           <>
-            <span>{email || "User"}</span>
+            <span>{email}</span>
 
             <button
               onClick={logout}
