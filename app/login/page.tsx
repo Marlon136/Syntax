@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Space_Grotesk } from "next/font/google";
 
 import { LoginView } from "./components/LoginView";
@@ -10,7 +11,9 @@ const spaceGrotesk = Space_Grotesk({
 export default function LoginPage() {
 	return (
 		<main className={spaceGrotesk.className}>
-			<LoginView />
+			<Suspense fallback={null}>
+				<LoginView />
+			</Suspense>
 		</main>
 	);
 }
