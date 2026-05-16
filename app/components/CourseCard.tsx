@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useLanguage } from "@/app/providers/LanguageProvider";
 
 export default function CourseCard({
   title,
@@ -17,6 +18,7 @@ export default function CourseCard({
   content: string[];
 }) {
   const [flipped, setFlipped] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <div
@@ -90,7 +92,7 @@ export default function CourseCard({
               cursor: "pointer",
             }}
           >
-            View Course
+            {t("courseCard.viewCourse")}
           </button>
         </div>
 
@@ -114,13 +116,13 @@ export default function CourseCard({
         >
           <h2 className="font-bold text-[#47a599]">{title}</h2>
 
-          <p>Con este curso aprenderás:</p>
+          <p>{t("courseCard.learnDetails")}</p>
 
-        <div style={{ flex: 1 }}>
-          {content.map((item, i) => (
-            <p key={i}>• {item}</p>
-          ))}
-        </div>
+          <div style={{ flex: 1 }}>
+            {content.map((item, i) => (
+              <p key={i}>• {item}</p>
+            ))}
+          </div>
 
 
 
@@ -137,7 +139,7 @@ export default function CourseCard({
               cursor: "pointer",
             }}
           >
-            Back
+            {t("courseCard.back")}
           </button>
         </div>
       </div>

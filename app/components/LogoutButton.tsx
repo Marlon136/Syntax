@@ -2,10 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useLanguage } from "@/app/providers/LanguageProvider";
 
 export function LogoutButton() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useLanguage();
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -27,10 +29,10 @@ export function LogoutButton() {
       onClick={handleLogout}
       disabled={isLoading}
       className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-50 text-red-600 font-semibold text-sm hover:bg-red-100 transition-colors disabled:opacity-50"
-      aria-label="Cerrar sesión"
+      aria-label={t("logout.label")}
     >
       <span className="material-symbols-outlined text-base">logout</span>
-      {isLoading ? "Cerrando..." : "Cerrar sesión"}
+      {isLoading ? t("logout.loading") : t("logout.button")}
     </button>
   );
 }

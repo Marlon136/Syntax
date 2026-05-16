@@ -1,21 +1,24 @@
+import { useLanguage } from "@/app/providers/LanguageProvider";
+
 export default function Features() {
+  const { t } = useLanguage();
 
   const items = [
-    ["Error Review", "Review mistakes faster"],
-    ["Extra Exercises", "More practice"],
-    ["Unlimited Hearts", "No limits"],
-    ["No Ads", "Focus learning"],
+    [t("features.item1.title"), t("features.item1.description")],
+    [t("features.item2.title"), t("features.item2.description")],
+    [t("features.item3.title"), t("features.item3.description")],
+    [t("features.item4.title"), t("features.item4.description")],
   ];
 
   return (
     <section className="px-16 py-16 bg-neutral-50 text-center">
 
       <h2 className="text-3xl font-bold text-[#264653] mb-2">
-        Everything you need to succeed
+        {t("features.heading")}
       </h2>
 
       <p className="text-[#264653]/70 mb-10">
-        Features designed to accelerate your learning
+        {t("features.description")}
       </p>
 
       <div className="grid grid-cols-4 gap-6">

@@ -1,5 +1,7 @@
 "use client";
 
+import { useLanguage } from "@/app/providers/LanguageProvider";
+
 export default function CourseModal({
   open,
   onClose,
@@ -11,6 +13,8 @@ export default function CourseModal({
   title: string;
   content: string[];
 }) {
+  const { t } = useLanguage();
+
   if (!open) return null;
 
   return (
@@ -32,7 +36,7 @@ export default function CourseModal({
           onClick={onClose}
           className="w-full bg-[#E76F51] hover:bg-[#d45d42] text-white py-2 rounded"
         >
-          Close
+          {t("courseModal.close")}
         </button>
 
       </div>

@@ -1,7 +1,9 @@
 "use client";
 import Image from "next/image";
+import { useLanguage } from "@/app/providers/LanguageProvider";
 
 export default function PricingHero() {
+  const { t } = useLanguage();
 
   const goToPlans = () => {
     const element = document.getElementById("plans");
@@ -17,7 +19,7 @@ export default function PricingHero() {
       <div className="max-w-2xl">
 
         <p className="text-sm text-[#47a599] font-semibold mb-3">
-          LEVEL UP YOUR CODING SKILLS
+          {t("pricing.hero.tagline")}
         </p>
 
         <h1 className="text-5xl font-bold text-[#2a4d60] mb-5">
@@ -28,14 +30,14 @@ export default function PricingHero() {
         </h1>
 
         <p className="text-[#2a4d60]/80 mb-6">
-          Master coding faster with advanced learning tools.
+          {t("pricing.hero.description")}
         </p>
 
         <button
           onClick={goToPlans}
           className="bg-[#f0a262] hover:bg-[#d45d42] text-white px-6 py-3 rounded-lg"
         >
-          Upgrade Now
+          {t("pricing.hero.cta")}
         </button>
 
       </div>

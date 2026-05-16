@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-
+import { useLanguage } from "@/app/providers/LanguageProvider";
 
 export default function Hero() {
 
   const router = useRouter();
+  const { t } = useLanguage();
 
   return (
     <section className="flex justify-between items-center px-16 py-20 bg-neutral-50">
@@ -18,9 +19,8 @@ export default function Hero() {
         </h1>
 
         <p className="text-[#264653]/80 mb-6 text-lg">
-          Learn Java, Python, and JavaScript through
-          interactive lessons. <br></br>
-          Join 6,000+ students and start your coding journey today.
+          {t('hero.subtitle') || 'Learn Java, Python, and JavaScript through interactive lessons. '}<br />
+          {t('hero.join') || 'Join 6,000+ students and start your coding journey today.'}
         </p>
 
         <div className="flex gap-4">
@@ -29,7 +29,7 @@ export default function Hero() {
             onClick={() => router.push("/login")}
             className="bg-[#f0a262] hover:bg-[#d45d42] text-white px-6 py-3 rounded-lg transition"
           >
-            Start Learning
+            {t('hero.cta') || 'Start Learning'}
           </button>
 
         </div>
@@ -43,8 +43,6 @@ export default function Hero() {
         height={200}
         className="w-[600px] h-[270px] object-cover rounded-xl shadow"
       />
-
-  
 
     </section>
   );

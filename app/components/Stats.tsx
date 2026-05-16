@@ -1,10 +1,14 @@
+"use client";
+import { useLanguage } from "@/app/providers/LanguageProvider";
+
 export default function Stats() {
+  const { t } = useLanguage();
 
   const stats = [
-    ["Active Students", "6,000+"],
-    ["Lessons Available", "120+"],
-    ["Success Rate", "98%"],
-    ["Average Rating", "4.9/5"],
+    [t("stats.activeStudents"), "6,000+"],
+    [t("stats.lessonsAvailable"), "120+"],
+    [t("stats.successRate"), "98%"],
+    [t("stats.averageRating"), "4.9/5"],
   ];
 
   return (

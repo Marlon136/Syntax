@@ -1,17 +1,31 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/app/providers/LanguageProvider";
 
 export default function Navbar() {
 
   const router = useRouter();
   const pathname = usePathname(); // 👈 detecta cambio de página
+  const searchParams = useSearchParams();
 
   const [isLogged, setIsLogged] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
+  const { lang, setLang, t } = useLanguage();
+
+  function changeLanguage(value: string) {
+    const selected = value as "en" | "pt" | "es";
+    if (selected === lang) return;
+
+    setLang(selected);
+
+    const params = new URLSearchParams(searchParams?.toString() ?? "");
+    params.set("lang", selected);
+    router.replace(`${pathname}?${params.toString()}`);
+  }
 
   useEffect(() => {
 
@@ -81,15 +95,15 @@ export default function Navbar() {
           <div className="flex gap-6 text-l text-[#264653]">
 
             <button onClick={goToCourses}>
-              Courses
+              {t('nav.courses')}
             </button>
 
             <button onClick={goToPath}>
-              Paths
+              {t('nav.paths')}
             </button>
 
             <button onClick={goToSubscribe}>
-              Get Pro
+              {t('nav.getPro')}
             </button>
 
           </div>
@@ -98,19 +112,30 @@ export default function Navbar() {
       </div>
 
 
-      <div className="flex gap-3">
+<div className="flex gap-3 items-center">
+
+        <select
+          value={lang}
+          onChange={(event) => changeLanguage(event.target.value)}
+          className="border border-[#264653]/30 rounded-lg px-3 py-2 text-sm bg-white text-[#264653]"
+          aria-label={t("nav.language")}
+        >
+          <option value="en">{t("nav.english")}</option>
+          <option value="es">{t("nav.spanish")}</option>
+          <option value="pt">{t("nav.portuguese")}</option>
+        </select>
 
         {!isLogged && (
           <>
             <button onClick={() => router.push("/login")}>
-              Log in
+              {t('nav.login')}
             </button>
 
             <button
               onClick={() => router.push("/login")}
               className="bg-[#E76F51] text-white px-4 py-2 rounded-lg"
             >
-              Sign Up
+              {t('nav.signup')}
             </button>
           </>
         )}
@@ -124,7 +149,7 @@ export default function Navbar() {
               onClick={logout}
               className="bg-[#264653] text-white px-4 py-2 rounded-lg"
             >
-              Log out
+              {t('nav.logout')}
             </button>
           </>
         )}

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 import { Eye, EyeOff, LogIn, Sparkles } from "lucide-react";
+import { useLanguage } from "@/app/providers/LanguageProvider";
 
 export function LoginView() {
 

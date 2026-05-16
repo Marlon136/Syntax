@@ -1,6 +1,9 @@
 "use client";
 
+import { useLanguage } from "@/app/providers/LanguageProvider";
+
 export default function Plans() {
+  const { t } = useLanguage();
 
   const checkout = async () => {
 
@@ -17,7 +20,7 @@ export default function Plans() {
     <section id="plans" className="px-16 py-20 bg-neutral-50 text-center">
 
       <h2 className="text-3xl font-bold text-[#264653] mb-10">
-        Choose Your Plan
+        {t("plans.title")}
       </h2>
 
       <div className="flex justify-center gap-10">
@@ -26,14 +29,14 @@ export default function Plans() {
 
         <div className="w-80 bg-[#fff8f3] p-6 rounded-xl border-2 border-[#E76F51] shadow-lg">
 
-          <p className="font-bold text-[#264653]">Free</p><br></br>
+          <p className="font-bold text-[#264653]">{t("plans.free")}</p><br></br>
 
           <p className="text-3xl font-bold text-[#264653]">
             $0
           </p>
 
           <button className="mt-4 w-full border border-[#E76F51]/30 py-2 rounded text-[#264653]">
-            Current Plan
+            {t("plans.currentPlan")}
           </button>
 
         </div>
@@ -44,7 +47,7 @@ export default function Plans() {
         <div className="w-80 bg-[#2a4d60] p-6 rounded-xl shadow-lg">
 
           <p className="font-bold text-[#ffffff]">
-            Java Bootcamp Pro
+            {t("plans.javaPro")}
           </p><br></br>
 
           <p className="text-3xl text-[#ffffff]">
@@ -55,7 +58,7 @@ export default function Plans() {
             onClick={checkout}
             className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
           >
-            Get Plan
+            {t("plans.getPlan")}
           </button>
 
         </div>
@@ -65,7 +68,7 @@ export default function Plans() {
         <div className="w-80 bg-[#2a4d60] p-6 rounded-xl shadow-lg">
 
           <p className="font-bold text-[#ffffff]">
-            Python Mastery Pro
+            {t("plans.pythonPro")}
           </p><br></br>
 
           <p className="text-3xl text-[#ffffff]">
@@ -76,7 +79,7 @@ export default function Plans() {
             onClick={checkout}
             className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
           >
-            Get Plan
+            {t("plans.getPlan")}
           </button>
 
         </div>
@@ -86,7 +89,7 @@ export default function Plans() {
         <div className="w-80 bg-[#2a4d60] p-6 rounded-xl shadow-lg">
 
           <p className="font-bold text-[#ffffff]">
-            JavaScript Pro
+            {t("plans.jsPro")}
           </p><br></br>
 
           <p className="text-3xl text-[#ffffff]">
@@ -97,7 +100,7 @@ export default function Plans() {
             onClick={checkout}
             className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
           >
-            Get Plan
+            {t("plans.getPlan")}
           </button>
 
         </div>
