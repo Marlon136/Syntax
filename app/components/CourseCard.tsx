@@ -24,14 +24,16 @@ export default function CourseCard({
     <div
       style={{
         perspective: "1000px",
-        width: "350px",
-        height: "320px"
+        width: "100%",
+        maxWidth: "350px",
+        minHeight: "320px",
       }}
     >
       <div
         style={{
           width: "100%",
           height: "100%",
+          minHeight: "320px",
           position: "relative",
           transition: "transform 0.5s",
           transformStyle: "preserve-3d",

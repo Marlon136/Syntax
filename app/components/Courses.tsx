@@ -55,7 +55,7 @@ export default function Courses() {
           {t("courses.title")}
         </h2>
 
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 
           <CourseCard
             title="Java Bootcamp"

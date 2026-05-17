@@ -78,9 +78,9 @@ export default function Navbar() {
 
 
   return (
-    <nav className="fixed w-full h-16 flex justify-between items-center px-12 py-5 bg-[#fff8f3] border-b border-[#264653]/20">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex flex-wrap items-center justify-between gap-4 bg-[#fff8f3] border-b border-[#264653]/20 px-4 py-3 sm:px-6 lg:px-12">
 
-      <div className="flex items-center gap-10">
+      <div className="flex flex-wrap items-center gap-4">
 
         <div
           onClick={() => router.push("/")}
@@ -112,7 +112,7 @@ export default function Navbar() {
       </div>
 
 
-<div className="flex gap-3 items-center">
+      <div className="flex flex-wrap items-center gap-3">
 
         <select
           value={lang}

@@ -28,11 +28,10 @@ export default function RootLayout({
 
       </head>
 
-      <body className="bg-neutral-50">
+      <body className="min-h-screen bg-neutral-50 pt-20">
 
         <LanguageProvider>
           <Navbar />
-          <br /> <br />
           {children}
           <Footer />
         </LanguageProvider>
