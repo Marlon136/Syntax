@@ -28,7 +28,7 @@ export default function RootLayout({
 
       </head>
 
-      <body className="min-h-screen bg-neutral-50 pt-20">
+      <body className="min-h-screen bg-neutral-50 pt-16 sm:pt-20">
 
         <LanguageProvider>
           <Navbar />

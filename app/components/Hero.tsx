@@ -10,15 +10,15 @@ export default function Hero() {
   const { t } = useLanguage();
 
   return (
-    <section className="flex justify-between items-center px-16 py-20 bg-neutral-50">
+    <section className="flex flex-col-reverse md:flex-row justify-between items-center px-6 sm:px-8 md:px-12 lg:px-16 py-12 md:py-20 bg-neutral-50">
 
-      <div className="max-w-xl">
+      <div className="max-w-xl w-full mt-8 md:mt-0">
 
-        <h1 className="text-5xl font-bold mb-4 text-[#2a4d60]">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-[#2a4d60]">
           Master <span className="text-[#E76F51]">Java</span> & Beyond with Syntax
         </h1>
 
-        <p className="text-[#264653]/80 mb-6 text-lg">
+        <p className="text-[#264653]/80 mb-6 text-base sm:text-lg">
           {t('hero.subtitle') || 'Learn Java, Python, and JavaScript through interactive lessons. '}<br />
           {t('hero.join') || 'Join 6,000+ students and start your coding journey today.'}
         </p>
@@ -41,7 +41,7 @@ export default function Hero() {
         alt="code"
         width={600}
         height={200}
-        className="w-[600px] h-[270px] object-cover rounded-xl shadow"
+        className="w-[280px] sm:w-[380px] md:w-[480px] lg:w-[600px] h-[180px] sm:h-[220px] md:h-[250px] object-cover rounded-xl shadow"
       />
 
     </section>

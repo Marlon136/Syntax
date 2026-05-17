@@ -84,7 +84,7 @@ export default function Navbar() {
 
         <div
           onClick={() => router.push("/")}
-          className="text-3xl font-bold text-[#2a4d60] cursor-pointer"
+          className="text-2xl sm:text-3xl font-bold text-[#2a4d60] cursor-pointer"
         >
           Sy<span className="text-[#47a599]">n</span>
           <span className="text-[#E76F51]">taX</span>
