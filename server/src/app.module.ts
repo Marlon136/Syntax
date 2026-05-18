@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { CoursesModule } from './courses/courses.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { PaymentsModule } from './payments/payments.module';
+import { LearningPathsModule } from './learning-paths/learning-paths.module';
+import { FriendsModule } from './friends/friends.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -18,6 +20,9 @@ import { AppService } from './app.service';
     CoursesModule,
     LessonsModule,
     PaymentsModule,
+    // New modules
+    LearningPathsModule,
+    FriendsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

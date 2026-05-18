@@ -15,6 +15,10 @@ model User {
   avatarUrl String?
   isPro     Boolean   @default(false)
   createdAt DateTime  @default(now())
+  // Relaciones
+  friendsSent     Friendship[] @relation("user_friends")
+  friendsReceived Friendship[] @relation("friend_of")
+  scores          UserScore[]
 }
 
 model Course {
@@ -24,6 +28,9 @@ model Course {
   description String?
   lessons     Lesson[]
   createdAt   DateTime @default(now())
+  // Relaciones
+  pathCourses PathCourse[]
+  scores      UserScore[]
 }
 
 model Lesson {
@@ -33,4 +40,47 @@ model Lesson {
   order     Int
   course    Course   @relation(fields: [courseId], references: [id])
   courseId  Int
+}
+
+model LearningPath {
+  id          Int          @id @default(autoincrement())
+  title       String
+  slug        String       @unique
+  description String?
+  // Relaciona el path con cursos (reutilizando el modelo Course)
+  pathCourses PathCourse[]
+  createdAt   DateTime     @default(now())
+}
+
+model PathCourse {
+  id            Int           @id @default(autoincrement())
+  learningPath  LearningPath  @relation(fields: [learningPathId], references: [id])
+  learningPathId Int
+  course        Course        @relation(fields: [courseId], references: [id])
+  courseId      Int
+  order         Int
+  @@unique([learningPathId, courseId])
+}
+
+// Relaciones de amistad entre usuarios
+model Friendship {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation("user_friends", fields: [userId], references: [id])
+  userId    Int
+  friend    User     @relation("friend_of", fields: [friendId], references: [id])
+  friendId  Int
+  status    String   @default("accepted")
+  createdAt DateTime @default(now())
+  @@unique([userId, friendId])
+}
+
+// Puntuaciones por usuario por curso/reto
+model UserScore {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  course    Course?  @relation(fields: [courseId], references: [id])
+  courseId  Int?
+  points    Int      @default(0)
+  updatedAt DateTime @updatedAt
 }

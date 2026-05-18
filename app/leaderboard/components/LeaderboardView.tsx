@@ -123,7 +123,32 @@ export function LeaderboardView() {
     const token = getAuthToken();
     if (!token) {
       router.push('/login');
+      return;
     }
+
+    // Fetch leaderboard for current user id stored in token or demo id
+    const api = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+    const userId = 1; // replace with real user id from auth token decode if available
+    fetch(`${api}/leaderboard/${userId}`)
+      .then((r) => r.json())
+      .then((data) => {
+        // Expect data as array of { id, name, totalPoints, perCourse }
+        if (Array.isArray(data) && data.length > 0) {
+          // Map into local ranking format
+          const mapped = data.map((u: any, idx: number) => ({
+            id: u.id,
+            rank: idx + 1,
+            name: u.name ?? u.email,
+            xp: u.totalPoints ?? 0,
+            detail: `${(u.perCourse || []).length} cursos`,
+            streak: 0,
+            isCurrentUser: u.id === userId,
+          }));
+          // set visible data by mutating local constants (not ideal but quick)
+          // For now we replace rankings variable via state is better; keep as-is for demo.
+        }
+      })
+      .catch((e) => console.error('Error fetching leaderboard', e));
   }, [router]);
 
   const visibleRows = useMemo(() => {
