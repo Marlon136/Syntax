@@ -3,6 +3,8 @@
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/app/providers/LanguageProvider";
+import ProfileModal from "./ProfileModal";
+import { apiFetch } from "@/lib/api";
 
 export default function Navbar() {
 
@@ -13,6 +15,8 @@ export default function Navbar() {
   const [isLogged, setIsLogged] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const { lang, setLang, t } = useLanguage();
 
@@ -41,6 +45,12 @@ export default function Navbar() {
       localStorage.getItem("syntax-user-email");
 
     setEmail(storedEmail);
+
+    if (cookie) {
+      apiFetch('/users/me').then((u) => setUser(u)).catch(() => setUser(null));
+    } else {
+      setUser(null);
+    }
 
   }, [pathname]); // 👈 se ejecuta cada vez que cambias de página
 
@@ -142,7 +152,16 @@ export default function Navbar() {
 
         {isLogged && (
           <>
-            <span>{email}</span>
+            {user?.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <button onClick={() => setProfileOpen(true)} className="w-10 h-10 rounded-full overflow-hidden">
+                <img src={user.avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+              </button>
+            ) : (
+              <button onClick={() => setProfileOpen(true)} className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                <span className="text-sm text-[#264653]">{(user?.name || email || 'U')[0]}</span>
+              </button>
+            )}
 
             <button
               onClick={logout}
@@ -150,6 +169,8 @@ export default function Navbar() {
             >
               {t('nav.logout')}
             </button>
+
+            <ProfileModal open={profileOpen} onClose={() => setProfileOpen(false)} />
           </>
         )}
 

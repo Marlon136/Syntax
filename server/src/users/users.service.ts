@@ -23,4 +23,11 @@ export class UsersService {
       where: { id },
     });
   }
+
+  async updateById(id: number, data: Partial<CreateUserDto & { avatarUrl?: string }>) {
+    return this.prisma.user.update({
+      where: { id },
+      data,
+    });
+  }
 }

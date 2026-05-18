@@ -90,4 +90,10 @@
   "features.item4.description": "Earn certificates to showcase your skills.",
   "features.heading": "Why choose SyntaX Pro?",
   "features.description": "Everything you need to become a confident developer, from beginner to advanced."
+  ,
+  "profile.title": "Profile",
+  "profile.name": "Name",
+  "profile.save": "Save",
+  "profile.saving": "Saving...",
+  "common.cancel": "Cancel"
 }

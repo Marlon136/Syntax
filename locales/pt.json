@@ -90,4 +90,10 @@
   "features.item4.description": "Conquiste certificados para demonstrar suas habilidades.",
   "features.heading": "Por que escolher SyntaX Pro?",
   "features.description": "Tudo o que você precisa para se tornar um desenvolvedor confiante, do iniciante ao avançado."
+  ,
+  "profile.title": "Perfil",
+  "profile.name": "Nome",
+  "profile.save": "Salvar",
+  "profile.saving": "Salvando...",
+  "common.cancel": "Cancelar"
 }
