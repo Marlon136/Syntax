@@ -1,48 +1,46 @@
 "use client";
+import { useEffect, useState } from "react";
 import CourseCard from "./CourseCard";
 import { useLanguage } from "@/app/providers/LanguageProvider";
+import { apiFetch } from "@/lib/api";
+import { getCompletedCourseSlugs } from "@/lib/courseCompletion";
+
+type Course = {
+  id: number;
+  slug: string;
+  title: string;
+  description?: string | null;
+  lessons: Array<{ id: number; title: string; content: string; order: number }>;
+};
+
+const getCourseImage = (slug: string) => {
+  if (slug.includes("javascript") || slug.includes("js")) return "/jsh.jpg";
+  if (slug.includes("python")) return "/Py.jpg";
+  if (slug.includes("java")) return "/Java.jpg";
+  return "/Java.jpg";
+};
+
+const getCoursePrice = (slug: string) => {
+  if (slug.includes("javascript") || slug.includes("js")) return "Pro: $39.99";
+  if (slug.includes("python")) return "Pro: $49.99";
+  if (slug.includes("java")) return "Pro: $59.99";
+  return "Pro: $49.99";
+};
 
 export default function Courses() {
   const { t } = useLanguage();
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [completedCourses, setCompletedCourses] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const courses = [
-    {
-      title: t("courses.java.title"),
-      lessons: t("courses.java.lessons"),
-      price: t("courses.java.price"),
-      img: "/Java.jpg",
-      content: [
-        t("courses.java.content.oop"),
-        t("courses.java.content.spring"),
-        t("courses.java.content.collections"),
-        t("courses.java.content.threads"),
-      ],
-    },
-    {
-      title: t("courses.python.title"),
-      lessons: t("courses.python.lessons"),
-      price: t("courses.python.price"),
-      img: "/Py.jpg",
-      content: [
-        t("courses.python.content.variables"),
-        t("courses.python.content.loops"),
-        t("courses.python.content.functions"),
-        t("courses.python.content.django"),
-      ],
-    },
-    {
-      title: t("courses.js.title"),
-      lessons: t("courses.js.lessons"),
-      price: t("courses.js.price"),
-      img: "/jsh.jpg",
-      content: [
-        t("courses.js.content.dom"),
-        t("courses.js.content.react"),
-        t("courses.js.content.node"),
-        t("courses.js.content.async"),
-      ],
-    },
-  ];
+  useEffect(() => {
+    setCompletedCourses(getCompletedCourseSlugs());
+    apiFetch<Course[]>("/courses")
+      .then(setCourses)
+      .catch((err) => setError(err instanceof Error ? err.message : String(err)))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <section 
@@ -55,48 +53,25 @@ export default function Courses() {
           {t("courses.title")}
         </h2>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        {loading && <p className="text-white">Loading courses...</p>}
+        {error && <p className="text-red-300">{error}</p>}
 
-          <CourseCard
-            title="Java Bootcamp"
-            lessons="60+ Lessons"
-            price="Pro: $59.99"
-            img="/Java.jpg"
-            content={[
-              "OOP",
-              "Spring Boot",
-              "Collections",
-              "Threads",
-            ]}
-          />
-
-          <CourseCard
-            title="Python Mastery"
-            lessons="120+ Lessons"
-            price="Pro: $49.99"
-            img="/Py.jpg"
-            content={[
-              "Variables",
-              "Loops",
-              "Functions",
-              "Django",
-            ]}
-          />
-
-          <CourseCard
-            title="JavaScript"
-            lessons="40+ Lessons"
-            price="Pro: $39.99"
-            img="/jsh.jpg"
-            content={[
-              "DOM",
-              "React",
-              "Node",
-              "Async",
-            ]}
-          />
-
-        </div>
+        {!loading && !error && (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {courses.map((course) => (
+              <CourseCard
+                key={course.id}
+                slug={course.slug}
+                title={course.title}
+                lessons={`${course.lessons.length}+ Lessons`}
+                price={getCoursePrice(course.slug)}
+                img={getCourseImage(course.slug)}
+                content={course.lessons.map((lesson) => lesson.title)}
+                completed={completedCourses.includes(course.slug)}
+              />
+            ))}
+          </div>
+        )}
 
       </div>
 

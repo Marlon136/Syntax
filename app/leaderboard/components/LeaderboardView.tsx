@@ -1,7 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { getAuthToken } from "@/lib/auth";
 import { LogoutButton } from "@/app/components/LogoutButton";
 
 type PodiumUser = {
@@ -113,8 +115,16 @@ const rivals = [
 type SortMode = "rank" | "xp" | "streak";
 
 export function LeaderboardView() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [sortMode, setSortMode] = useState<SortMode>("rank");
+
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token) {
+      router.push('/login');
+    }
+  }, [router]);
 
   const visibleRows = useMemo(() => {
     const normalized = query.trim().toLowerCase();

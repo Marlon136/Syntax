@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { getAuthToken } from "@/lib/auth";
 
 type Milestone = {
   id: number;
@@ -23,6 +24,13 @@ export function LearningPathView() {
   const [query, setQuery] = useState("");
   const router = useRouter();
   const [milestones, setMilestones] = useState(initialMilestones);
+
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token) {
+      router.push('/login');
+    }
+  }, [router]);
 
   const completedCount = milestones.filter((item) => item.status === "completed").length;
   const inProgress = milestones.find((item) => item.status === "in-progress") ?? null;

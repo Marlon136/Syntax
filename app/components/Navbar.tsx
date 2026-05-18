@@ -3,6 +3,7 @@
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/app/providers/LanguageProvider";
+import { getEmailFromToken } from "@/lib/auth";
 import ProfileModal from "./ProfileModal";
 import { apiFetch } from "@/lib/api";
 
@@ -158,6 +159,11 @@ export default function Navbar() {
 
         {isLogged && (
           <>
+            {(email?.toLowerCase().trim() === 'marlon@gmail.com' || getEmailFromToken()?.toLowerCase().trim() === 'marlon@gmail.com') && (
+              <button onClick={() => router.push('/admin/lessons')} className="font-medium">
+                Crear lecciones
+              </button>
+            )}
             {user?.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <button onClick={() => setProfileOpen(true)} className="w-10 h-10 rounded-full overflow-hidden">

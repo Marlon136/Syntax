@@ -30,8 +30,18 @@ async function main() {
   if (javaCourse) {
     await prisma.lesson.createMany({
       data: [
-        { title: 'Introducción a Java', content: 'Aprende la sintaxis básica de Java.', order: 1, courseId: javaCourse.id },
-        { title: 'Tipos y variables', content: 'Comprende tipos primitivos y variables.', order: 2, courseId: javaCourse.id },
+        {
+          title: 'Introducción a Java',
+          content: 'Comprende cómo funciona un programa Java, la estructura de clases y el método main. Este enunciado te prepara para escribir tu primer programa.',
+          order: 1,
+          courseId: javaCourse.id,
+        },
+        {
+          title: 'Tipos y variables',
+          content: 'Aprende los tipos primitivos, cómo declarar variables y cómo imprimir valores en consola. Usa ejemplos claros de int, String y boolean.',
+          order: 2,
+          courseId: javaCourse.id,
+        },
       ],
     });
   }
@@ -39,8 +49,18 @@ async function main() {
   if (jsCourse) {
     await prisma.lesson.createMany({
       data: [
-        { title: 'Funciones modernas', content: 'Arrow functions y callbacks.', order: 1, courseId: jsCourse.id },
-        { title: 'Asincronía', content: 'Promises, async/await y fetch.', order: 2, courseId: jsCourse.id },
+        {
+          title: 'Funciones modernas',
+          content: 'Construye funciones modernas usando arrow syntax y aprende cómo pasar datos con callbacks. El ejercicio es crear funciones que transformen valores.',
+          order: 1,
+          courseId: jsCourse.id,
+        },
+        {
+          title: 'Asincronía',
+          content: 'Gestiona código asíncrono con Promises y async/await, y aprende a llamar una API simulada. El enunciado te pide escribir una función que espere una respuesta.',
+          order: 2,
+          courseId: jsCourse.id,
+        },
       ],
     });
   }
@@ -48,8 +68,18 @@ async function main() {
   if (pythonCourse) {
     await prisma.lesson.createMany({
       data: [
-        { title: 'Sintaxis básica', content: 'Variables, tipos y operadores.', order: 1, courseId: pythonCourse.id },
-        { title: 'Funciones y módulos', content: 'Organiza tu código en Python.', order: 2, courseId: pythonCourse.id },
+        {
+          title: 'Sintaxis básica',
+          content: 'Entiende variables, operadores y estructuras simples en Python. El enunciado explica cómo escribir tu primer script.',
+          order: 1,
+          courseId: pythonCourse.id,
+        },
+        {
+          title: 'Funciones y módulos',
+          content: 'Organiza tu código en funciones y usa módulos para separarlo. El ejercicio propone crear funciones reutilizables.',
+          order: 2,
+          courseId: pythonCourse.id,
+        },
       ],
     });
   }

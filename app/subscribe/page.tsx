@@ -1,12 +1,26 @@
+"use client";
+
+
+import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { getAuthToken } from "@/lib/auth";
 import PricingHero from "@/app/components/pricing/PricingHero";
 import Plans from "@/app/components/pricing/Plans";
 import PlanTable from "@/app/components/pricing/PlanTable";
 import { Separator } from "@/components/ui/separator";
 
+export default function Page() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const success = searchParams.get("success") === "1";
+  const canceled = searchParams.get("canceled") === "1";
 
-export default function Page({ searchParams }: { searchParams: { success?: string; canceled?: string } }) {
-  const success = searchParams?.success === "1";
-  const canceled = searchParams?.canceled === "1";
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token) {
+      router.push('/login');
+    }
+  }, [router]);
 
   return (
     <>

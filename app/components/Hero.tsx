@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/app/providers/LanguageProvider";
+import { getAuthToken } from "@/lib/auth";
 
 export default function Hero() {
 
@@ -26,7 +27,11 @@ export default function Hero() {
         <div className="flex gap-4">
 
           <button
-            onClick={() => router.push("/login")}
+            onClick={() => {
+              const token = getAuthToken();
+              if (token) router.push("/coursesDisplay");
+              else router.push("/login");
+            }}
             className="bg-[#f0a262] hover:bg-[#d45d42] text-white px-6 py-3 rounded-lg transition"
           >
             {t('hero.cta') || 'Start Learning'}

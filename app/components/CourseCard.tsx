@@ -2,23 +2,33 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useLanguage } from "@/app/providers/LanguageProvider";
 
 export default function CourseCard({
+  slug,
   title,
   price,
   lessons,
   img,
   content,
+  completed,
 }: {
+  slug: string;
   title: string;
   price: string;
   lessons: string;
   img: string;
   content: string[];
+  completed?: boolean;
 }) {
   const [flipped, setFlipped] = useState(false);
   const { t } = useLanguage();
+  const moreInfoLabelRaw = t("courseCard.moreInfo");
+  const backLabelRaw = t("courseCard.back");
+  const moreInfoLabel = typeof moreInfoLabelRaw === "string" && moreInfoLabelRaw.includes(".") ? "Más información" : moreInfoLabelRaw;
+  const backLabel = typeof backLabelRaw === "string" && backLabelRaw.includes(".") ? "Volver" : backLabelRaw;
+  const router = useRouter();
 
   return (
     <div
@@ -81,21 +91,23 @@ export default function CourseCard({
             </span>
           </div>
 
-          <button
-            onClick={() => setFlipped(true)}
-            style={{
-              marginTop: "40px",
-              width: "100%",
-              background: "#2a4d60",
-              color: "white",
-              padding: "10px",
-              borderRadius: "8px",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            {t("courseCard.viewCourse")}
-          </button>
+          <div style={{ position: 'absolute', left: 16, right: 16, bottom: 16 }}>
+            <button
+              type="button"
+              onClick={() => setFlipped(true)}
+              style={{
+                width: "100%",
+                background: "#47a599",
+                color: "white",
+                padding: "10px",
+                borderRadius: "8px",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              {moreInfoLabel}
+            </button>
+          </div>
         </div>
 
         {/* BACK */}

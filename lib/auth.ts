@@ -31,3 +31,16 @@ export function authHeaders() {
   const token = getAuthToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
+
+export function getEmailFromToken(): string | null {
+  const token = getAuthToken();
+  if (!token) return null;
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const payload = JSON.parse(atob(parts[1]));
+    return payload.email || null;
+  } catch {
+    return null;
+  }
+}
