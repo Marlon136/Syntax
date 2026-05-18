@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { apiFetch, postJson } from "@/lib/api";
 import { getAuthEmail, getAuthToken, getEmailFromToken } from "@/lib/auth";
-import { getCompletedCourseSlugs, markCourseCompleted } from "@/lib/courseCompletion";
+import { getCompletedCourseSlugs, markCourseCompleted, markLessonCompleted, getCompletedLessonsForCourseSync } from "@/lib/courseCompletion";
 import CodeEditor from "@/app/components/premium/CodeEditor";
 
 type Lesson = {
@@ -261,7 +261,38 @@ export default function CourseDetailPage() {
                       <CodeEditor code={code} setCode={setCode} language={editorLanguage} />
                     </div>
                   </div>
-                </div>
+                    </div>
+                    <div className="mt-3 flex gap-3">
+                      <button
+                        onClick={async () => {
+                          if (!course || !selectedLesson) return;
+                          const result = await markLessonCompleted(course.id, slug, selectedLesson.id, course.lessons.length);
+                          if (result.completed) {
+                            // refresh completed courses list from server if possible
+                            const token = getAuthToken();
+                            if (token) {
+                              try {
+                                const api = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+                                const res = await fetch(`${api}/users/me/completed-courses`, { headers: { Authorization: `Bearer ${token}` } });
+                                const data = await res.json();
+                                if (Array.isArray(data)) setCompletedCourses(data);
+                              } catch (err) {
+                                // fallback to local
+                                setCompletedCourses(markCourseCompleted(slug));
+                              }
+                            } else {
+                              setCompletedCourses(markCourseCompleted(slug));
+                            }
+                          }
+                        }}
+                        className="rounded-2xl bg-[#F4A261] px-4 py-2 text-sm font-bold text-white"
+                      >
+                        Marcar lección completada
+                      </button>
+                      <div className="ml-auto text-sm text-gray-500">
+                        {course ? `${course.lessons.length - getCompletedLessonsForCourseSync(slug).length} lecciones restantes` : ''}
+                      </div>
+                    </div>
                 {isMarlon && (
                   <div className="rounded-2xl border border-[#264653]/20 bg-white p-5">
                     <h3 className="mb-4 text-xl font-semibold text-[#264653]">Crear nueva lección</h3>

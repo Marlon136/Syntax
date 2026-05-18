@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getAuthToken, authHeaders } from "@/lib/auth";
+import { getCompletedLessonsSync } from "@/lib/courseCompletion";
 
 type Milestone = {
   id: number;
@@ -11,6 +12,8 @@ type Milestone = {
   side: "left" | "right";
   progress?: number;
   slug?: string;
+  courseTitle?: string;
+  lessonsRemainingInCourse?: number;
 };
 
 export function LearningPathView() {
@@ -43,29 +46,54 @@ export function LearningPathView() {
         const completedRes = await fetch(`${api}/users/me/completed-courses`, { headers: { ...authHeaders() } });
         const completed: string[] = await completedRes.json();
 
-        // build milestones from pathCourses
-        const pcs = path.pathCourses || [];
-        const built: Milestone[] = pcs.map((pc: any, idx: number) => ({
-          id: pc.id ?? idx + 1,
-          title: pc.course?.title ?? pc.courseId?.toString() ?? `Módulo ${idx + 1}`,
-          status: 'locked',
-          side: idx % 2 === 0 ? 'left' : 'right',
-          progress: completed.includes(pc.course?.slug) ? 100 : 0,
-          slug: pc.course?.slug,
-        }));
+        // build milestones as one node per lesson (ordered by path course and lesson order)
+        const pcs = Array.isArray(path.pathCourses)
+          ? [...path.pathCourses].sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+          : [];
+        const lessonsMap = getCompletedLessonsSync();
+        const built: Milestone[] = [];
+
+        for (const pc of pcs) {
+          const courseTitle = pc.course?.title ?? `Curso ${pc.courseId ?? ""}`;
+          const courseSlug = pc.course?.slug;
+          const lessons = Array.isArray(pc.course?.lessons)
+            ? [...pc.course.lessons].sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+            : [];
+
+          const completedLessonIds = new Set<number>(courseSlug ? (lessonsMap[courseSlug] ?? []) : []);
+          const isCourseCompleted = Boolean(courseSlug && completed.includes(courseSlug));
+          const courseDoneCount = isCourseCompleted ? lessons.length : completedLessonIds.size;
+          const lessonsRemainingInCourse = Math.max(0, lessons.length - courseDoneCount);
+          const coursePercent = lessons.length > 0 ? Math.round((courseDoneCount / lessons.length) * 100) : 0;
+
+          for (const lesson of lessons) {
+            const lessonCompleted = isCourseCompleted || completedLessonIds.has(lesson.id);
+            built.push({
+              id: lesson.id,
+              title: lesson.title,
+              status: "locked",
+              side: built.length % 2 === 0 ? "left" : "right",
+              progress: lessonCompleted ? 100 : coursePercent,
+              slug: courseSlug,
+              courseTitle,
+              lessonsRemainingInCourse,
+            });
+          }
+        }
 
         // assign statuses: completed for those in completed list, in-progress for first not completed, rest locked
         let unlocked = false;
         for (const m of built) {
-          if (m.progress === 100) {
+          if ((m.progress ?? 0) >= 100) {
             m.status = 'completed';
           } else if (!unlocked) {
             m.status = 'in-progress';
-            m.progress = 10;
+            // keep progress from lessons if present, but ensure a minimum visual
+            m.progress = Math.max(10, m.progress ?? 10);
             unlocked = true;
           } else {
             m.status = 'locked';
-            m.progress = 0;
+            m.progress = m.progress ?? 0;
           }
         }
 
@@ -79,7 +107,6 @@ export function LearningPathView() {
   }, [router]);
 
   const completedCount = milestones.filter((item) => item.status === "completed").length;
-  const inProgress = milestones.find((item) => item.status === "in-progress") ?? null;
   const totalProgress = milestones.length ? Math.round(milestones.reduce((acc, item) => acc + (item.progress ?? 0), 0) / milestones.length) : 0;
 
   const visibleMilestones = useMemo(() => {
@@ -118,7 +145,7 @@ export function LearningPathView() {
             {[
               ["Racha de Dias", `${Math.max(1, completedCount * 3)} Dias`, "local_fire_department", "#F59E0B", "Sigue asi!"],
               ["Total XP", `${(completedCount * 3500 + totalProgress * 10).toLocaleString("es-ES")}`, "stars", "#F4A261", "+450 hoy"],
-              ["Progreso", `${completedCount}/${milestones.length}`, "check_circle", "#0D9488", "Modulos Completados"],
+              ["Progreso", `${completedCount}/${milestones.length}`, "check_circle", "#0D9488", "Lecciones Completadas"],
             ].map(([title, value, icon, iconColor, footer]) => (
               <article
                 key={title}
@@ -152,7 +179,7 @@ export function LearningPathView() {
                 const isLocked = item.status === "locked";
 
                 return (
-                  <div key={item.title} className="relative z-10 flex w-full justify-center">
+                  <div key={`${item.slug ?? "course"}-${item.id}`} className="relative z-10 flex w-full justify-center">
                     <div
                       className={`flex items-center justify-center rounded-full border-4 border-white ${
                         isInProgress
@@ -184,6 +211,14 @@ export function LearningPathView() {
                       <p className={`text-sm font-bold leading-tight ${isLocked ? "text-gray-400" : "text-[#264653]"}`}>
                         {item.title}
                       </p>
+                      {item.courseTitle ? (
+                        <p className="mt-1 text-[11px] font-semibold text-gray-500">{item.courseTitle}</p>
+                      ) : null}
+                      {typeof item.lessonsRemainingInCourse === "number" ? (
+                        <p className="mt-1 text-[11px] font-semibold text-gray-500">
+                          {item.lessonsRemainingInCourse} lecciones faltantes en este curso
+                        </p>
+                      ) : null}
 
                       {isInProgress ? (
                         <>
@@ -198,7 +233,7 @@ export function LearningPathView() {
                       ) : null}
                     </div>
 
-                    {index < milestones.length - 1 ? (
+                    {index < visibleMilestones.length - 1 ? (
                       <div
                         className={`absolute left-1/2 top-[78px] h-24 w-1.5 -translate-x-1/2 rounded-full ${
                           isCompleted || isInProgress ? "bg-[#F4A261]" : "bg-gray-200"
