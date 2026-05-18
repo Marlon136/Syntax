@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useLanguage } from "@/app/providers/LanguageProvider";
+import { clearAuth } from "@/lib/auth";
 
 export function LogoutButton() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export function LogoutButton() {
     try {
       // Elimina la cookie estableciendo una fecha pasada
       document.cookie = "syntax-auth=; Path=/; Max-Age=0";
+      clearAuth();
 
       // Pequeño delay para asegurar que la cookie se borre
       await new Promise((resolve) => setTimeout(resolve, 100));

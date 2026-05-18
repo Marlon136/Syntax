@@ -132,14 +132,13 @@ export default function Navbar() {
             </button>
 
             <button
-              onClick={() => router.push("/login")}
+              onClick={() => router.push("/register")}
               className="bg-[#E76F51] text-white px-4 py-2 rounded-lg"
             >
               {t('nav.signup')}
             </button>
           </>
         )}
-
 
         {isLogged && (
           <>

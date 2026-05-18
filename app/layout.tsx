@@ -1,4 +1,5 @@
 import "./globals.css";
+import { Suspense } from "react";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import { Geist } from "next/font/google";
@@ -31,7 +32,9 @@ export default function RootLayout({
       <body className="min-h-screen bg-neutral-50 pt-16 sm:pt-20">
 
         <LanguageProvider>
-          <Navbar />
+          <Suspense fallback={null}>
+            <Navbar />
+          </Suspense>
           {children}
           <Footer />
         </LanguageProvider>

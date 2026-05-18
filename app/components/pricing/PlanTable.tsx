@@ -1,3 +1,5 @@
+"use client";
+
 import { useLanguage } from "@/app/providers/LanguageProvider";
 
 export default function PlanTable() {

@@ -6,6 +6,8 @@ import { FormEvent, useState } from "react";
 
 import { Eye, EyeOff, LogIn, Sparkles } from "lucide-react";
 import { useLanguage } from "@/app/providers/LanguageProvider";
+import { postJson } from "@/lib/api";
+import { setAuthToken, setAuthEmail } from "@/lib/auth";
 
 export function LoginView() {
 
@@ -52,29 +54,36 @@ export function LoginView() {
 
     setIsSubmitting(true);
 
-    await new Promise(r => setTimeout(r, 700));
+    try {
+      const result = await postJson<{ access_token: string }>("/auth/login", {
+        email,
+        password,
+      });
 
+      setAuthToken(result.access_token);
+      setAuthEmail(email);
 
-    if (rememberMe) {
-      localStorage.setItem("syntax-user-email", email);
-    } else {
-      localStorage.removeItem("syntax-user-email");
+      if (rememberMe) {
+        localStorage.setItem("syntax-user-email", email);
+      } else {
+        localStorage.removeItem("syntax-user-email");
+      }
+
+      const maxAge = rememberMe ? 60 * 60 * 24 * 30 : undefined;
+      const cookieParts = [
+        "syntax-auth=1",
+        "Path=/",
+        "SameSite=Lax",
+        ...(maxAge ? [`Max-Age=${maxAge}`] : []),
+      ];
+      document.cookie = cookieParts.join("; ");
+
+      setMessage("Sesión iniciada. Redirigiendo...");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error al iniciar sesión");
+      setIsSubmitting(false);
+      return;
     }
-
-
-    const maxAge = rememberMe ? 60 * 60 * 24 * 30 : undefined;
-
-    const cookieParts = [
-      "syntax-auth=1",
-      "Path=/",
-      "SameSite=Lax",
-      ...(maxAge ? [`Max-Age=${maxAge}`] : []),
-    ];
-
-    document.cookie = cookieParts.join("; ");
-
-
-    setMessage("Sesión iniciada. Redirigiendo...");
 
     const redirectTo =
       searchParams?.get("from") || "/learningPath";
@@ -255,16 +264,13 @@ export function LoginView() {
           {/* FOOTER */}
 
           <p className="text-center text-sm mt-6">
-
-            No tienes cuenta?{" "}
-
+            ¿No tienes cuenta?{' '}
             <Link
-              href="/premium"
+              href="/register"
               className="text-[#2A9D8F] font-bold"
             >
-              Hazte premium
+              Regístrate
             </Link>
-
           </p>
 
         </div>
