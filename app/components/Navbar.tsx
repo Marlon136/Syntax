@@ -112,9 +112,15 @@ export default function Navbar() {
               {t('nav.paths')}
             </button>
 
-            <button onClick={goToSubscribe}>
-              {t('nav.getPro')}
-            </button>
+            {!user?.isPro ? (
+              <button onClick={goToSubscribe}>
+                {t('nav.getPro')}
+              </button>
+            ) : (
+              <span className="rounded-full bg-[#2A9D8F] px-3 py-2 text-sm text-white">
+                {t('nav.pro')}
+              </span>
+            )}
 
           </div>
         )}

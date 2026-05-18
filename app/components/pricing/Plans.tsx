@@ -1,19 +1,37 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useLanguage } from "@/app/providers/LanguageProvider";
+import { API_URL } from "@/lib/api";
+import { getAuthToken } from "@/lib/auth";
 
 export default function Plans() {
+  const router = useRouter();
   const { t } = useLanguage();
 
-  const checkout = async () => {
+  const checkout = async (plan: "java" | "python" | "js" = "java") => {
+    const token = getAuthToken();
+    if (!token) {
+      router.push(`/login?from=/subscribe`);
+      return;
+    }
 
-    const res = await fetch("/api/checkout", {
+    const res = await fetch(`${API_URL}/payments/create-session`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ plan }),
     });
 
     const data = await res.json();
 
-    window.location.href = data.url;
+    if (data?.url) {
+      window.location.href = data.url;
+    } else {
+      alert("Error starting checkout: " + (data?.error || "unknown"));
+    }
   };
 
   return (
@@ -55,7 +73,7 @@ export default function Plans() {
           </p>
 
           <button
-            onClick={checkout}
+            onClick={() => checkout()}
             className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
           >
             {t("plans.getPlan")}
@@ -76,7 +94,7 @@ export default function Plans() {
           </p>
 
           <button
-            onClick={checkout}
+            onClick={() => checkout("python")}
             className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
           >
             {t("plans.getPlan")}
@@ -97,7 +115,7 @@ export default function Plans() {
           </p>
 
           <button
-            onClick={checkout}
+            onClick={() => checkout("js")}
             className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
           >
             {t("plans.getPlan")}
