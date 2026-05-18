@@ -35,7 +35,10 @@ export default function Courses() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setCompletedCourses(getCompletedCourseSlugs());
+    (async () => {
+      const completed = await getCompletedCourseSlugs();
+      setCompletedCourses(completed);
+    })();
     apiFetch<Course[]>("/courses")
       .then(setCourses)
       .catch((err) => setError(err instanceof Error ? err.message : String(err)))

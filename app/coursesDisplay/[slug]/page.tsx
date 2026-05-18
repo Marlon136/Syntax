@@ -94,7 +94,10 @@ export default function CourseDetailPage() {
       return;
     }
 
-    setCompletedCourses(getCompletedCourseSlugs());
+    (async () => {
+      const completed = await getCompletedCourseSlugs();
+      setCompletedCourses(completed);
+    })();
     setAuthEmail(getAuthEmail());
     if (!slug) return;
     apiFetch<Course>(`/courses/${slug}`)
@@ -111,8 +114,31 @@ export default function CourseDetailPage() {
 
   function handleComplete() {
     if (!slug) return;
-    const updated = markCourseCompleted(slug);
-    setCompletedCourses(updated);
+    // Persist completion to server (adds points) and then update local state
+    const token = getAuthToken();
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
+    (async () => {
+      try {
+        await postJson('/scores', { courseId: course?.id, points: 1000 });
+        // refresh completed courses from server
+        const res = await fetch((process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001') + '/users/me/completed-courses', { headers: { Authorization: `Bearer ${token}` } });
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setCompletedCourses(data);
+          // keep local copy as well
+          data.forEach((s: string) => markCourseCompleted(s));
+        }
+      } catch (err) {
+        console.error('Error marking course complete', err);
+        // fallback to local-only
+        const updated = markCourseCompleted(slug);
+        setCompletedCourses(updated);
+      }
+    })();
   }
 
   const isCompleted = slug ? completedCourses.includes(slug) : false;

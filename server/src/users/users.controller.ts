@@ -21,4 +21,10 @@ export class UsersController {
   ) {
     return this.usersService.updateById(req.user.userId, body as any);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me/completed-courses')
+  async getCompletedCourses(@Request() req: { user: { userId: number } }) {
+    return this.usersService.getCompletedCourseSlugs(req.user.userId);
+  }
 }

@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getAuthToken } from "@/lib/auth";
+import { getAuthToken, authHeaders } from "@/lib/auth";
 
 type Milestone = {
   id: number;
@@ -10,33 +10,77 @@ type Milestone = {
   status: "completed" | "in-progress" | "locked";
   side: "left" | "right";
   progress?: number;
+  slug?: string;
 };
-
-const initialMilestones: Milestone[] = [
-  { id: 1, title: "Variables y Tipos de Datos", status: "completed", side: "left", progress: 100 },
-  { id: 2, title: "Estructuras de Control", status: "completed", side: "right", progress: 100 },
-  { id: 3, title: "Principios de POO", status: "in-progress", side: "left", progress: 65 },
-  { id: 4, title: "Funciones Avanzadas de Java", status: "locked", side: "right", progress: 0 },
-  { id: 5, title: "Proyecto: Sistema Bancario", status: "locked", side: "left", progress: 0 },
-];
 
 export function LearningPathView() {
   const [query, setQuery] = useState("");
   const router = useRouter();
-  const [milestones, setMilestones] = useState(initialMilestones);
+  const [milestones, setMilestones] = useState<Milestone[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = getAuthToken();
     if (!token) {
       router.push('/login');
+      return;
     }
+
+    (async () => {
+      try {
+        const api = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+        // Fetch first learning path
+        const pathsRes = await fetch(`${api}/learning-paths`, { headers: { ...authHeaders() } });
+        const paths = await pathsRes.json();
+        const path = Array.isArray(paths) && paths[0] ? paths[0] : null;
+        if (!path) {
+          setMilestones([]);
+          setLoading(false);
+          return;
+        }
+
+        // fetch completed courses for current user
+        const completedRes = await fetch(`${api}/users/me/completed-courses`, { headers: { ...authHeaders() } });
+        const completed: string[] = await completedRes.json();
+
+        // build milestones from pathCourses
+        const pcs = path.pathCourses || [];
+        const built: Milestone[] = pcs.map((pc: any, idx: number) => ({
+          id: pc.id ?? idx + 1,
+          title: pc.course?.title ?? pc.courseId?.toString() ?? `Módulo ${idx + 1}`,
+          status: 'locked',
+          side: idx % 2 === 0 ? 'left' : 'right',
+          progress: completed.includes(pc.course?.slug) ? 100 : 0,
+          slug: pc.course?.slug,
+        }));
+
+        // assign statuses: completed for those in completed list, in-progress for first not completed, rest locked
+        let unlocked = false;
+        for (const m of built) {
+          if (m.progress === 100) {
+            m.status = 'completed';
+          } else if (!unlocked) {
+            m.status = 'in-progress';
+            m.progress = 10;
+            unlocked = true;
+          } else {
+            m.status = 'locked';
+            m.progress = 0;
+          }
+        }
+
+        setMilestones(built);
+      } catch (err) {
+        console.error('Error loading learning path', err);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [router]);
 
   const completedCount = milestones.filter((item) => item.status === "completed").length;
   const inProgress = milestones.find((item) => item.status === "in-progress") ?? null;
-  const totalProgress = Math.round(
-    milestones.reduce((acc, item) => acc + (item.progress ?? 0), 0) / milestones.length,
-  );
+  const totalProgress = milestones.length ? Math.round(milestones.reduce((acc, item) => acc + (item.progress ?? 0), 0) / milestones.length) : 0;
 
   const visibleMilestones = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -48,42 +92,6 @@ export function LearningPathView() {
     return milestones.filter((item) => item.title.toLowerCase().includes(normalized));
   }, [milestones, query]);
 
-  const increaseProgress = () => {
-    if (!inProgress) {
-      return;
-    }
-
-    setMilestones((current) =>
-      current.map((item) => {
-        if (item.id !== inProgress.id) {
-          return item;
-        }
-
-        const next = Math.min(100, (item.progress ?? 0) + 10);
-        return { ...item, progress: next, status: next >= 100 ? "completed" : "in-progress" };
-      }),
-    );
-  };
-
-  const completeCurrentMilestone = () => {
-    setMilestones((current) => {
-      let unlocked = false;
-
-      return current.map((item) => {
-        if (item.status === "in-progress") {
-          return { ...item, status: "completed", progress: 100 };
-        }
-
-        if (!unlocked && item.status === "locked") {
-          unlocked = true;
-          return { ...item, status: "in-progress", progress: 10 };
-        }
-
-        return item;
-      });
-    });
-  };
-
   return (
     <div className="flex min-h-screen bg-[#FAFAFA] text-[#264653]">
       <main className="flex-1 overflow-y-auto">
@@ -92,17 +100,17 @@ export function LearningPathView() {
             <nav className="mb-1 flex gap-2 text-xs font-semibold uppercase tracking-wider text-[#F4A261]/80">
               <span>Curso</span>
               <span>/</span>
-              <span className="text-[#264653]">Especializacion Java</span>
+              <span className="text-[#264653]">Especializacion</span>
             </nav>
             <button
-          onClick={() => router.push("/leaderboard")}
-          className="mt-4 w-full rounded-xl bg-[#F4A261] py-2 font-bold text-white"
-        >
-          Ver Leaderboard
-        </button>
-            <h1 className="text-4xl font-black tracking-tight text-[#264653]">Ruta Maestra de Java</h1>
+              onClick={() => router.push("/leaderboard")}
+              className="mt-4 w-full rounded-xl bg-[#F4A261] py-2 font-bold text-white"
+            >
+              Ver Leaderboard
+            </button>
+            <h1 className="text-4xl font-black tracking-tight text-[#264653]">Ruta de Aprendizaje</h1>
             <p className="mt-2 text-lg text-gray-500">
-              Modulo Activo: <span className="font-semibold text-[#264653]">Programacion Orientada a Objetos</span>
+              Modulo Activo: <span className="font-semibold text-[#264653]">Sigue la ruta completando cursos</span>
             </p>
           </section>
 
@@ -137,6 +145,7 @@ export function LearningPathView() {
             </h2>
 
             <div className="relative flex flex-col items-center gap-20">
+              {loading && <p>Cargando ruta...</p>}
               {visibleMilestones.map((item, index) => {
                 const isCompleted = item.status === "completed";
                 const isInProgress = item.status === "in-progress";
@@ -182,24 +191,8 @@ export function LearningPathView() {
                             <div className="h-full rounded-full bg-[#F4A261]" style={{ width: `${item.progress ?? 0}%` }} />
                           </div>
                           <div className="mt-2 flex items-center justify-between text-[11px] font-bold">
-                            <span className="text-gray-400">Paso 3 de 4</span>
+                            <span className="text-gray-400">Paso 1</span>
                             <span className="text-[#F4A261]">{item.progress}%</span>
-                          </div>
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            <button
-                              type="button"
-                              onClick={increaseProgress}
-                              className="rounded-lg bg-[#F4A261]/10 px-3 py-1 text-[11px] font-bold text-[#F4A261] hover:bg-[#F4A261]/20"
-                            >
-                              Continuar +10%
-                            </button>
-                            <button
-                              type="button"
-                              onClick={completeCurrentMilestone}
-                              className="rounded-lg bg-[#264653] px-3 py-1 text-[11px] font-bold text-white hover:bg-[#1f3a45]"
-                            >
-                              Completar modulo
-                            </button>
                           </div>
                         </>
                       ) : null}
@@ -216,7 +209,7 @@ export function LearningPathView() {
                 );
               })}
 
-              {visibleMilestones.length === 0 ? (
+              {visibleMilestones.length === 0 && !loading ? (
                 <p className="rounded-xl bg-white p-4 text-sm font-semibold text-gray-500 shadow-sm">
                   No encontramos modulos con esa busqueda.
                 </p>
@@ -238,13 +231,13 @@ export function LearningPathView() {
                 </div>
                 <h3 className="text-2xl font-black">Interfaces y Abstraccion</h3>
                 <p className="mt-2 max-w-md font-medium text-white/90">
-                  Desbloquea el nucleo del codigo Java modular. Completa esto para llegar al nivel 15.
+                  Desbloquea el nucleo del codigo modular. Completa cursos para avanzar en la ruta.
                 </p>
               </div>
 
               <button
                 type="button"
-                onClick={increaseProgress}
+                onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
                 className="rounded-2xl bg-white px-10 py-4 font-black text-[#F4A261] shadow-xl transition-all hover:scale-105 hover:shadow-white/20"
               >
                 Reanudar Aprendizaje

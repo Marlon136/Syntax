@@ -30,4 +30,9 @@ export class UsersService {
       data,
     });
   }
+
+  async getCompletedCourseSlugs(userId: number) {
+    const scores = await this.prisma.userScore.findMany({ where: { userId }, include: { course: { select: { slug: true } } } });
+    return scores.map((s) => s.course?.slug).filter(Boolean) as string[];
+  }
 }

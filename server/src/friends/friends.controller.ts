@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { CreateFriendDto } from './dto/create-friend.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller()
 export class FriendsController {
@@ -11,8 +12,10 @@ export class FriendsController {
     return this.service.addFriend(dto.userId, dto.friendId);
   }
 
-  @Get('leaderboard/:userId')
-  leaderboard(@Param('userId') userId: string) {
+  @UseGuards(JwtAuthGuard)
+  @Get('leaderboard')
+  leaderboard(@Request() req: any) {
+    const userId = req.user?.userId;
     return this.service.getFriendsLeaderboard(Number(userId));
   }
 }

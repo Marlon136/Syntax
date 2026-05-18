@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { getAuthToken } from "@/lib/auth";
+import { authHeaders, getAuthToken, getUserIdFromToken } from "@/lib/auth";
 import { LogoutButton } from "@/app/components/LogoutButton";
 
 type PodiumUser = {
@@ -26,91 +26,7 @@ type RankRow = {
   isCurrentUser?: boolean;
 };
 
-const podium: PodiumUser[] = [
-  {
-    id: 1,
-    name: "Sarah Miller",
-    xp: 18240,
-    streak: 18,
-    place: 2,
-    avatar:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBMq2d394iwHMpND87WkGoMMxM-5eIJ5dWZ3tvbCf4M6ykDvg6jf6YfxNgXpcxx1Ha9Jlr1NkCIvw3iXy_F2HDtX2fdHcfd6OHsL-DtUSKWVIFpqGZvXDEiuFluGsW4Ys6c4GHavVW4W3ihqi9YQQhq6-329JGlXWJZuzBEFc2avRb6olBpu9njyZN9guoAoHR_PT9QrxOoSYBkRP40opQW5RD9YMXd2ZHkCsCov9Bj8Jm7FFI78oreSS8PuezDhf7qkPnAcKqxl8A",
-  },
-  {
-    id: 2,
-    name: "David Jo",
-    xp: 24500,
-    streak: 32,
-    place: 1,
-    highlight: true,
-    avatar:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCE9LzKE-Y9go8O9yJURLGtvr60szPmdxpKbDgVZwUbZPJ_BH92Q-4YFi3Kyd5_vwSIVkfWNyuktMlB9OSHv3bxsMIetXip96cyCi4gH5CGO4eTZ3R5GaFIe5AmYQYo9vUdSuh8ishHUaOiv-rLq1X4D03KjWYz5_GuAWSGQt3r3sakoDg3yld-Aq45o_i4aPZ1I6lVxxjiraILqL7wDN92eA3ZTZ7RCNgmVASqcCq4JpUdG0-nMsOdiTWlJRYRyQ4syocBKok6iKQ",
-  },
-  {
-    id: 3,
-    name: "Alex Chen",
-    xp: 15800,
-    streak: 14,
-    place: 3,
-    avatar:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCEG3M45mhWOlVRLlYx8XmRE-u0SSyiSzvlpTmcH36yKDY8sQGoqm5PTq1nxj1Y-xsK4nAyDrwUhjJjVcSgKE06R_K0g0DtNXRYkQwKYOrrqAOXIZh1cbFRr5w2-vj8hkqv-uVc_IzbDWZFt96Bnbjvga8-EA8rGLcQwRXD2y0CtMy-a0--B4o59WPT7JPpijmDFE_zIVmHxDJQSLr98GZC2yZjKy_FQLq6UDZAOwdzL29Ank9-N5CNS6hbpon0cMESfPsDjxMfsLk",
-  },
-];
-
-const rankings: RankRow[] = [
-  {
-    id: 4,
-    rank: 4,
-    name: "Tu",
-    xp: 12400,
-    detail: "Estrella Naciente",
-    streak: 12,
-    isCurrentUser: true,
-  },
-  {
-    id: 5,
-    rank: 5,
-    name: "Leo Parker",
-    xp: 11980,
-    detail: "Compitiendo en Liga Diamante",
-    streak: 8,
-  },
-  {
-    id: 6,
-    rank: 6,
-    name: "Nadia Cruz",
-    xp: 10850,
-    detail: "Compitiendo en Liga Diamante",
-    streak: 45,
-  },
-  {
-    id: 7,
-    rank: 7,
-    name: "Dario Kim",
-    xp: 10020,
-    detail: "Compitiendo en Liga Diamante",
-    streak: 2,
-  },
-];
-
-const rivals = [
-  {
-    id: 1,
-    name: "Alex Chen",
-    event: "+400 XP ganados",
-    time: "2m",
-    avatar:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCEG3M45mhWOlVRLlYx8XmRE-u0SSyiSzvlpTmcH36yKDY8sQGoqm5PTq1nxj1Y-xsK4nAyDrwUhjJjVcSgKE06R_K0g0DtNXRYkQwKYOrrqAOXIZh1cbFRr5w2-vj8hkqv-uVc_IzbDWZFt96Bnbjvga8-EA8rGLcQwRXD2y0CtMy-a0--B4o59WPT7JPpijmDFE_zIVmHxDJQSLr98GZC2yZjKy_FQLq6UDZAOwdzL29Ank9-N5CNS6hbpon0cMESfPsDjxMfsLk",
-  },
-  {
-    id: 2,
-    name: "Sarah Miller",
-    event: "Cuestionario completado",
-    time: "15m",
-    avatar:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBMq2d394iwHMpND87WkGoMMxM-5eIJ5dWZ3tvbCf4M6ykDvg6jf6YfxNgXpcxx1Ha9Jlr1NkCIvw3iXy_F2HDtX2fdHcfd6OHsL-DtUSKWVIFpqGZvXDEiuFluGsW4Ys6c4GHavVW4W3ihqi9YQQhq6-329JGlXWJZuzBEFc2avRb6olBpu9njyZN9guoAoHR_PT9QrxOoSYBkRP40opQW5RD9YMXd2ZHkCsCov9Bj8Jm7FFI78oreSS8PuezDhf7qkPnAcKqxl8A",
-  },
-];
+// Data placeholders removed — derive podium, rankings and rivals from API `rows`
 
 type SortMode = "rank" | "xp" | "streak";
 
@@ -118,6 +34,7 @@ export function LeaderboardView() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [sortMode, setSortMode] = useState<SortMode>("rank");
+  const [rows, setRows] = useState<RankRow[]>([]);
 
   useEffect(() => {
     const token = getAuthToken();
@@ -126,15 +43,14 @@ export function LeaderboardView() {
       return;
     }
 
-    // Fetch leaderboard for current user id stored in token or demo id
+    // Fetch leaderboard for current user (server reads user from JWT)
     const api = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-    const userId = 1; // replace with real user id from auth token decode if available
-    fetch(`${api}/leaderboard/${userId}`)
+    fetch(`${api}/leaderboard`, { headers: { ...authHeaders() } })
       .then((r) => r.json())
       .then((data) => {
         // Expect data as array of { id, name, totalPoints, perCourse }
-        if (Array.isArray(data) && data.length > 0) {
-          // Map into local ranking format
+        if (Array.isArray(data)) {
+          const currentUserId = getUserIdFromToken();
           const mapped = data.map((u: any, idx: number) => ({
             id: u.id,
             rank: idx + 1,
@@ -142,10 +58,9 @@ export function LeaderboardView() {
             xp: u.totalPoints ?? 0,
             detail: `${(u.perCourse || []).length} cursos`,
             streak: 0,
-            isCurrentUser: u.id === userId,
+            isCurrentUser: u.id === currentUserId,
           }));
-          // set visible data by mutating local constants (not ideal but quick)
-          // For now we replace rankings variable via state is better; keep as-is for demo.
+          setRows(mapped);
         }
       })
       .catch((e) => console.error('Error fetching leaderboard', e));
@@ -153,48 +68,32 @@ export function LeaderboardView() {
 
   const visibleRows = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    const filtered = rankings.filter((row) => {
-      if (!normalized) {
-        return true;
-      }
-
+    const filtered = rows.filter((row) => {
+      if (!normalized) return true;
       return `${row.name} ${row.detail}`.toLowerCase().includes(normalized);
     });
 
     return [...filtered].sort((a, b) => {
-      if (sortMode === "xp") {
-        return b.xp - a.xp;
-      }
-
-      if (sortMode === "streak") {
-        return b.streak - a.streak;
-      }
-
+      if (sortMode === "xp") return b.xp - a.xp;
+      if (sortMode === "streak") return b.streak - a.streak;
       return a.rank - b.rank;
     });
   }, [query, sortMode]);
 
   const visiblePodium = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    if (!normalized) {
-      return podium;
-    }
-
-    return podium.filter((user) => user.name.toLowerCase().includes(normalized));
-  }, [query]);
+    return rows.slice(0, 3).map((r, idx) => ({ id: r.id, name: r.name, xp: r.xp, streak: r.streak, place: idx + 1, avatar: '', highlight: idx === 0 }));
+  }, [rows]);
 
   const visibleRivals = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    if (!normalized) {
-      return rivals;
-    }
-
-    return rivals.filter((rival) => rival.name.toLowerCase().includes(normalized));
+    const base = rows.slice(0, 5).map((r) => ({ id: r.id, name: r.name, event: `+${r.xp} XP ganados`, time: "h", avatar: "" }));
+    if (!normalized) return base;
+    return base.filter((rival) => rival.name.toLowerCase().includes(normalized));
   }, [query]);
 
-  const currentUser = rankings.find((row) => row.isCurrentUser) ?? rankings[0];
-  const topXp = Math.max(...podium.map((user) => user.xp));
-  const percentile = Math.round((currentUser.xp / topXp) * 100);
+  const currentUser = rows.find((row) => row.isCurrentUser) ?? { rank: rows[0]?.rank ?? 0, xp: 0 };
+  const topXp = rows.length ? Math.max(...rows.map((r) => r.xp)) : 1;
+  const percentile = Math.round((currentUser.xp / Math.max(1, topXp)) * 100);
 
   const formatNumber = (value: number) => value.toLocaleString("es-ES");
 

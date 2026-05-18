@@ -44,3 +44,16 @@ export function getEmailFromToken(): string | null {
     return null;
   }
 }
+
+export function getUserIdFromToken(): number | null {
+  const token = getAuthToken();
+  if (!token) return null;
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const payload = JSON.parse(atob(parts[1]));
+    return payload.sub ?? payload.userId ?? null;
+  } catch {
+    return null;
+  }
+}
