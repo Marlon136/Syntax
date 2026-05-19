@@ -17,9 +17,9 @@ export default function Footer() {
 
         <div>
           <p className="font-bold text-[#ffbe19]">{t('footer.connect') || 'Connect with us'}</p>
-          <p>Instagram</p>
-          <p>Twitter</p>
-          <p>GitHub</p>
+          <p>{t('footer.social.instagram')}</p>
+          <p>{t('footer.social.twitter')}</p>
+          <p>{t('footer.social.github')}</p>
         </div>
 
         <div></div>

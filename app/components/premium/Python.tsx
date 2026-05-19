@@ -21,6 +21,22 @@ export default function PremiumContentPython() {
 
   const lessons: Lesson[] = [
     {
+      title: "Condicionales",
+      text: "Controla el flujo con if / elif / else en Python.",
+      code: `x = 10
+
+if x > 0:
+    print("Positivo")
+elif x == 0:
+    print("Cero")
+else:
+    print("Negativo")
+
+color = "rojo"
+if color == "rojo":
+    print("Es rojo")`,
+    },
+    {
       title: "Intro",
       text: "Print in python",
       code: `print("Hello")`,
@@ -33,6 +49,22 @@ export default function PremiumContentPython() {
   ];
 
   const exercises: Exercise[] = [
+    {
+      title: "Condicionales",
+      description: "Practica sentencias if / elif / else en Python.",
+      code: `x = 10
+
+if x > 0:
+    print("Positivo")
+elif x == 0:
+    print("Cero")
+else:
+    print("Negativo")
+
+color = "rojo"
+if color == "rojo":
+    print("Es rojo")`,
+    },
     {
       title: "Variables quiz",
       description: "Create x = 10",

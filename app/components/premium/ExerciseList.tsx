@@ -1,5 +1,6 @@
 "use client";
 
+import { useLanguage } from "@/app/providers/LanguageProvider";
 import { Exercise } from "./PremiumContent";
 
 export default function ExerciseList({
@@ -9,11 +10,13 @@ export default function ExerciseList({
   exercises: Exercise[];
   setExercise: (e: Exercise) => void;
 }) {
+  const { t } = useLanguage();
+
   return (
     <div className="bg-white rounded-xl border border-neutral-200 p-6">
 
       <h2 className="font-bold text-[#264653] mb-4">
-        Extra Exercises
+        {t("premium.exerciseList.title")}
       </h2>
 
       <ul className="space-y-3">

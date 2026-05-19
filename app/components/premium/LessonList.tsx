@@ -1,5 +1,6 @@
 "use client";
 
+import { useLanguage } from "@/app/providers/LanguageProvider";
 import { Lesson } from "./PremiumContent";
 
 export default function LessonList({
@@ -9,11 +10,13 @@ export default function LessonList({
   lessons: Lesson[];
   setLesson: (l: Lesson) => void;
 }) {
+  const { t } = useLanguage();
+
   return (
     <div className="bg-white p-6 rounded-xl border">
 
       <h2 className="font-bold text-[#264653] mb-4">
-        Python Lessons
+        {t("premium.lessonList.title")}
       </h2>
 
       <ul className="space-y-2">

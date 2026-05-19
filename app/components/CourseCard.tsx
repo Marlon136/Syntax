@@ -24,10 +24,8 @@ export default function CourseCard({
 }) {
   const [flipped, setFlipped] = useState(false);
   const { t } = useLanguage();
-  const moreInfoLabelRaw = t("courseCard.moreInfo");
-  const backLabelRaw = t("courseCard.back");
-  const moreInfoLabel = typeof moreInfoLabelRaw === "string" && moreInfoLabelRaw.includes(".") ? "Más información" : moreInfoLabelRaw;
-  const backLabel = typeof backLabelRaw === "string" && backLabelRaw.includes(".") ? "Volver" : backLabelRaw;
+  const moreInfoLabel = t("courseCard.moreInfo");
+  const backLabel = t("courseCard.back");
   const router = useRouter();
 
   return (

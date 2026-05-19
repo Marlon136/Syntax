@@ -20,11 +20,18 @@ const getCourseImage = (slug: string) => {
   return "/Java.jpg";
 };
 
-const getCoursePrice = (slug: string) => {
-  if (slug.includes("javascript") || slug.includes("js")) return "Pro: $39.99";
-  if (slug.includes("python")) return "Pro: $49.99";
-  if (slug.includes("java")) return "Pro: $59.99";
-  return "Pro: $49.99";
+const getCourseLessons = (slug: string, t: (key: string) => string) => {
+  if (slug.includes("javascript") || slug.includes("js")) return t("courses.js.lessons");
+  if (slug.includes("python")) return t("courses.python.lessons");
+  if (slug.includes("java")) return t("courses.java.lessons");
+  return t("courses.python.lessons");
+};
+
+const getCoursePrice = (slug: string, t: (key: string) => string) => {
+  if (slug.includes("javascript") || slug.includes("js")) return t("courses.js.price");
+  if (slug.includes("python")) return t("courses.python.price");
+  if (slug.includes("java")) return t("courses.java.price");
+  return t("courses.python.price");
 };
 
 export default function Courses() {
@@ -56,8 +63,8 @@ export default function Courses() {
           {t("courses.title")}
         </h2>
 
-        {loading && <p className="text-white">Loading courses...</p>}
-        {error && <p className="text-red-300">{error}</p>}
+        {loading && <p className="text-white">{t("courses.loading")}</p>}
+        {error && <p className="text-red-300">{t("courses.error")}: {error}</p>}
 
         {!loading && !error && (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -66,8 +73,8 @@ export default function Courses() {
                 key={course.id}
                 slug={course.slug}
                 title={course.title}
-                lessons={`${course.lessons.length}+ Lessons`}
-                price={getCoursePrice(course.slug)}
+                lessons={getCourseLessons(course.slug, t)}
+                price={getCoursePrice(course.slug, t)}
                 img={getCourseImage(course.slug)}
                 content={course.lessons.map((lesson) => lesson.title)}
                 completed={completedCourses.includes(course.slug)}

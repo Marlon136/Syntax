@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useLanguage } from "@/app/providers/LanguageProvider";
 import LessonList from "./LessonList";
 import LessonViewer from "./LessonViewer";
 import ExerciseList from "./ExerciseList";
@@ -18,74 +19,56 @@ export type Exercise = {
 };
 
 export default function PremiumContentJava() {
+  const { t, lang } = useLanguage();
 
-  const lessons: Lesson[] = [
-    {
-      title: "Intro",
-      text: "Print in Java",
-      code: `public class Main {
-  public static void main(String[] args) {
-    System.out.println("Hello");
-  }
-}`,
-    },
-    {
-      title: "Variables",
-      text: "Create variables in Java",
-      code: `public class Main {
-  public static void main(String[] args) {
-    int x = 5;
-    System.out.println(x);
-  }
-}`,
-    },
-    {
-      title: "If",
-      text: "If statement",
-      code: `public class Main {
-  public static void main(String[] args) {
-    int x = 10;
+  const lessons: Lesson[] = useMemo(
+    () => [
+      {
+        title: t("premium.java.lesson.condicionales.title"),
+        text: t("premium.java.lesson.condicionales.text"),
+        code: t("premium.java.lesson.condicionales.code"),
+      },
+      {
+        title: t("premium.java.lesson.intro.title"),
+        text: t("premium.java.lesson.intro.text"),
+        code: t("premium.java.lesson.intro.code"),
+      },
+      {
+        title: t("premium.java.lesson.variables.title"),
+        text: t("premium.java.lesson.variables.text"),
+        code: t("premium.java.lesson.variables.code"),
+      },
+    ],
+    [t]
+  );
 
-    if (x > 5) {
-      System.out.println("Big");
-    }
-  }
-}`,
-    },
-  ];
-
-  const exercises: Exercise[] = [
-    {
-      title: "Variable exercise",
-      description: "Create int x = 10 and print it",
-      code: `public class Main {
-  public static void main(String[] args) {
-    int x = 10;
-    System.out.println(x);
-  }
-}`,
-    },
-    {
-      title: "Loop challenge",
-      description: "Print numbers 0 to 4",
-      code: `public class Main {
-  public static void main(String[] args) {
-
-    for (int i = 0; i < 5; i++) {
-      System.out.println(i);
-    }
-
-  }
-}`,
-    },
-  ];
+  const exercises: Exercise[] = useMemo(
+    () => [
+      {
+        title: t("premium.java.exercise.condicionales.title"),
+        description: t("premium.java.exercise.condicionales.description"),
+        code: t("premium.java.exercise.condicionales.code"),
+      },
+      {
+        title: t("premium.java.exercise.variable.title"),
+        description: t("premium.java.exercise.variable.description"),
+        code: t("premium.java.exercise.variable.code"),
+      },
+      {
+        title: t("premium.java.exercise.loop.title"),
+        description: t("premium.java.exercise.loop.description"),
+        code: t("premium.java.exercise.loop.code"),
+      },
+    ],
+    [t]
+  );
 
   const [lesson, setLesson] = useState<Lesson>(lessons[0]);
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const [code, setCode] = useState<string>(lessons[0].code);
 
   return (
-    <section className="px-16 pb-16 bg-neutral-50">
+    <section key={lang} className="px-16 pb-16 bg-neutral-50">
 
       <div className="grid grid-cols-3 gap-6">
 

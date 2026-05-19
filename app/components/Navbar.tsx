@@ -162,7 +162,7 @@ export default function Navbar() {
           <>
             {(email?.toLowerCase().trim() === 'marlon@gmail.com' || getEmailFromToken()?.toLowerCase().trim() === 'marlon@gmail.com') && (
               <button onClick={() => router.push('/admin/lessons')} className="font-medium">
-                Crear lecciones
+                {t("nav.createLessons")}
               </button>
             )}
             {user?.avatarUrl ? (
