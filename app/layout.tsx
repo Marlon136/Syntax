@@ -29,7 +29,7 @@ export default function RootLayout({
 
       </head>
 
-      <body className="min-h-screen bg-neutral-50 pt-16 sm:pt-20">
+      <body className={cn(geist.variable, "min-h-screen bg-neutral-50 pt-16 sm:pt-20")}> 
 
         <LanguageProvider>
           <Suspense fallback={null}>

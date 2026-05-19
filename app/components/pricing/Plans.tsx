@@ -41,11 +41,11 @@ export default function Plans() {
         {t("plans.title")}
       </h2>
 
-      <div className="flex justify-center gap-10">
+      <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
 
         {/* FREE */}
 
-        <div className="w-80 bg-[#fff8f3] p-6 rounded-xl border-2 border-[#E76F51] shadow-lg">
+        <div className="w-full max-w-sm bg-[#fff8f3] p-6 rounded-xl border-2 border-[#E76F51] shadow-lg">
 
           <p className="font-bold text-[#264653]">{t("plans.free")}</p><br></br>
 
@@ -62,7 +62,7 @@ export default function Plans() {
 
         {/* PRO  JAVA*/}
 
-        <div className="w-80 bg-[#2a4d60] p-6 rounded-xl shadow-lg">
+        <div className="w-full max-w-sm bg-[#2a4d60] p-6 rounded-xl shadow-lg">
 
           <p className="font-bold text-[#ffffff]">
             {t("plans.javaPro")}
@@ -83,7 +83,7 @@ export default function Plans() {
 
         {/* PRO  PYTHON*/}
 
-        <div className="w-80 bg-[#2a4d60] p-6 rounded-xl shadow-lg">
+        <div className="w-full max-w-sm bg-[#2a4d60] p-6 rounded-xl shadow-lg">
 
           <p className="font-bold text-[#ffffff]">
             {t("plans.pythonPro")}
@@ -104,7 +104,7 @@ export default function Plans() {
 
         {/* PRO  JAVA SCRIPT*/}
 
-        <div className="w-80 bg-[#2a4d60] p-6 rounded-xl shadow-lg">
+        <div className="w-full max-w-sm bg-[#2a4d60] p-6 rounded-xl shadow-lg">
 
           <p className="font-bold text-[#ffffff]">
             {t("plans.jsPro")}

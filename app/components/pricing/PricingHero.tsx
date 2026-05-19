@@ -14,9 +14,9 @@ export default function PricingHero() {
   };
 
   return (
-    <section className="px-16 py-20 bg-neutral-50 flex justify-between items-center">
+    <section className="px-6 py-16 bg-neutral-50 flex flex-col-reverse items-center gap-10 lg:flex-row lg:justify-between lg:py-20 lg:px-16">
 
-      <div className="max-w-2xl">
+      <div className="w-full max-w-2xl lg:max-w-3xl">
 
         <p className="text-sm text-[#47a599] font-semibold mb-3">
           {t("pricing.hero.tagline")}
@@ -46,9 +46,9 @@ export default function PricingHero() {
       <Image
         src="/gopro.jpg"
         alt="code"
-        width={600}
-        height={200}
-        className="w-[600px] h-[270px] object-cover rounded-xl shadow"
+        width={1200}
+        height={700}
+        className="w-full max-w-3xl rounded-xl shadow-xl object-cover h-[300px] sm:h-[360px] md:h-[420px]"
       />
 
     </section>

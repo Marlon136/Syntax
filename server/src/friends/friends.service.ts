@@ -17,23 +17,14 @@ export class FriendsService {
   }
 
   async getFriendsLeaderboard(userId: number) {
-    // Get friends where user is either sender or receiver
-    // Only consider accepted friendships
-    const sent = await this.prisma.friendship.findMany({ where: { userId, status: 'accepted' }, select: { friendId: true } });
-    const received = await this.prisma.friendship.findMany({ where: { friendId: userId, status: 'accepted' }, select: { userId: true } });
+    // Retrieve all users for a global leaderboard
+    const users = await this.prisma.user.findMany({ select: { id: true, name: true, email: true } });
+    const userIds = users.map((u) => u.id);
 
-    const friendIds = Array.from(new Set([
-      ...sent.map((s) => s.friendId),
-      ...received.map((r) => r.userId),
-    ]));
-
-    // Include the user themselves in the leaderboard
-    friendIds.push(userId);
-
-    // Aggregate total points per friend using userScore groupBy
+    // Aggregate total points for all users using userScore groupBy
     const totals = await this.prisma.userScore.groupBy({
       by: ['userId'],
-      where: { userId: { in: friendIds } },
+      where: { userId: { in: userIds } },
       _sum: { points: true },
     });
 
@@ -41,11 +32,8 @@ export class FriendsService {
     const totalsMap = new Map<number, number>();
     totals.forEach((t) => totalsMap.set(t.userId, t._sum?.points ?? 0));
 
-    // Fetch user info
-    const users = await this.prisma.user.findMany({ where: { id: { in: friendIds } }, select: { id: true, name: true, email: true } });
-
-    // Fetch per-course scores for these users
-    const perCourseScores = await this.prisma.userScore.findMany({ where: { userId: { in: friendIds } }, select: { userId: true, courseId: true, points: true } });
+    // Fetch per-course scores for all users
+    const perCourseScores = await this.prisma.userScore.findMany({ where: { userId: { in: userIds } }, select: { userId: true, courseId: true, points: true } });
 
     const perCourseMap = new Map<number, { courseId: number; points: number }[]>();
     perCourseScores.forEach((s) => {

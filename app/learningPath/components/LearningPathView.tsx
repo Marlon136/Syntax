@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getAuthToken, authHeaders } from "@/lib/auth";
-import { getCompletedLessonsSync } from "@/lib/courseCompletion";
+import { getCompletedLessonsSync, getCompletedCourseSlugsSync } from "@/lib/courseCompletion";
 
 type Milestone = {
   id: number;
@@ -14,6 +14,8 @@ type Milestone = {
   slug?: string;
   courseTitle?: string;
   lessonsRemainingInCourse?: number;
+  lessonCompleted?: boolean;
+  coursePercent?: number;
 };
 
 export function LearningPathView() {
@@ -21,90 +23,132 @@ export function LearningPathView() {
   const router = useRouter();
   const [milestones, setMilestones] = useState<Milestone[]>([]);
   const [loading, setLoading] = useState(true);
+  const [learningPath, setLearningPath] = useState<any>(null);
+  const [completedCourses, setCompletedCourses] = useState<string[]>([]);
 
-  useEffect(() => {
+  const loadMilestones = useCallback(async () => {
     const token = getAuthToken();
     if (!token) {
       router.push('/login');
       return;
     }
 
-    (async () => {
-      try {
-        const api = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
-        // Fetch first learning path
-        const pathsRes = await fetch(`${api}/learning-paths`, { headers: { ...authHeaders() } });
-        const paths = await pathsRes.json();
-        const path = Array.isArray(paths) && paths[0] ? paths[0] : null;
-        if (!path) {
-          setMilestones([]);
-          setLoading(false);
-          return;
-        }
-
-        // fetch completed courses for current user
-        const completedRes = await fetch(`${api}/users/me/completed-courses`, { headers: { ...authHeaders() } });
-        const completed: string[] = await completedRes.json();
-
-        // build milestones as one node per lesson (ordered by path course and lesson order)
-        const pcs = Array.isArray(path.pathCourses)
-          ? [...path.pathCourses].sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
-          : [];
-        const lessonsMap = getCompletedLessonsSync();
-        const built: Milestone[] = [];
-
-        for (const pc of pcs) {
-          const courseTitle = pc.course?.title ?? `Curso ${pc.courseId ?? ""}`;
-          const courseSlug = pc.course?.slug;
-          const lessons = Array.isArray(pc.course?.lessons)
-            ? [...pc.course.lessons].sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
-            : [];
-
-          const completedLessonIds = new Set<number>(courseSlug ? (lessonsMap[courseSlug] ?? []) : []);
-          const isCourseCompleted = Boolean(courseSlug && completed.includes(courseSlug));
-          const courseDoneCount = isCourseCompleted ? lessons.length : completedLessonIds.size;
-          const lessonsRemainingInCourse = Math.max(0, lessons.length - courseDoneCount);
-          const coursePercent = lessons.length > 0 ? Math.round((courseDoneCount / lessons.length) * 100) : 0;
-
-          for (const lesson of lessons) {
-            const lessonCompleted = isCourseCompleted || completedLessonIds.has(lesson.id);
-            built.push({
-              id: lesson.id,
-              title: lesson.title,
-              status: "locked",
-              side: built.length % 2 === 0 ? "left" : "right",
-              progress: lessonCompleted ? 100 : coursePercent,
-              slug: courseSlug,
-              courseTitle,
-              lessonsRemainingInCourse,
-            });
-          }
-        }
-
-        // assign statuses: completed for those in completed list, in-progress for first not completed, rest locked
-        let unlocked = false;
-        for (const m of built) {
-          if ((m.progress ?? 0) >= 100) {
-            m.status = 'completed';
-          } else if (!unlocked) {
-            m.status = 'in-progress';
-            // keep progress from lessons if present, but ensure a minimum visual
-            m.progress = Math.max(10, m.progress ?? 10);
-            unlocked = true;
-          } else {
-            m.status = 'locked';
-            m.progress = m.progress ?? 0;
-          }
-        }
-
-        setMilestones(built);
-      } catch (err) {
-        console.error('Error loading learning path', err);
-      } finally {
+    try {
+      const api = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+      
+      // Fetch first learning path
+      const pathsRes = await fetch(`${api}/learning-paths`, { headers: { ...authHeaders() } });
+      const paths = await pathsRes.json();
+      const path = Array.isArray(paths) && paths[0] ? paths[0] : null;
+      
+      if (!path) {
+        setMilestones([]);
         setLoading(false);
+        return;
       }
-    })();
+
+      setLearningPath(path);
+
+      // fetch completed courses for current user
+      const completedRes = await fetch(`${api}/users/me/completed-courses`, { headers: { ...authHeaders() } });
+      let completed: string[] = [];
+      if (completedRes.ok) {
+        const data = await completedRes.json();
+        completed = Array.isArray(data) ? data : getCompletedCourseSlugsSync();
+      } else {
+        completed = getCompletedCourseSlugsSync();
+      }
+      setCompletedCourses(completed);
+
+      // build milestones as one node per lesson (ordered by path course and lesson order)
+      const pcs = Array.isArray(path.pathCourses)
+        ? [...path.pathCourses].sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+        : [];
+      const lessonsMap = getCompletedLessonsSync();
+      const built: Milestone[] = [];
+
+      for (const pc of pcs) {
+        const courseTitle = pc.course?.title ?? `Curso ${pc.courseId ?? ""}`;
+        const courseSlug = pc.course?.slug;
+        const courseKey = courseSlug ?? String(pc.courseId);
+        const lessons = Array.isArray(pc.course?.lessons)
+          ? [...pc.course.lessons].sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+          : [];
+
+        const completedLessonIds = new Set<number>(lessonsMap[courseKey] ?? []);
+        const isCourseCompleted = Boolean(
+          (courseSlug && completed.includes(courseSlug)) || completed.includes(String(pc.courseId))
+        );
+        const courseDoneCount = isCourseCompleted ? lessons.length : completedLessonIds.size;
+        const lessonsRemainingInCourse = Math.max(0, lessons.length - courseDoneCount);
+        const coursePercent = lessons.length > 0 ? Math.round((courseDoneCount / lessons.length) * 100) : 0;
+
+        for (const lesson of lessons) {
+          const lessonCompleted = isCourseCompleted || completedLessonIds.has(lesson.id);
+          built.push({
+            id: lesson.id,
+            title: lesson.title,
+            status: "locked",
+            side: built.length % 2 === 0 ? "left" : "right",
+            progress: lessonCompleted ? 100 : 0,
+            slug: courseSlug,
+            courseTitle,
+            lessonsRemainingInCourse,
+            lessonCompleted,
+            coursePercent,
+          });
+        }
+      }
+
+      // assign statuses: completed for lessons already done, in-progress for next available lesson, rest locked
+      let unlocked = false;
+      for (const m of built) {
+        if (m.lessonCompleted) {
+          m.status = 'completed';
+          m.progress = 100;
+        } else if (!unlocked) {
+          m.status = 'in-progress';
+          m.progress = Math.max(10, m.coursePercent ?? 10);
+          unlocked = true;
+        } else {
+          m.status = 'locked';
+          m.progress = 0;
+        }
+      }
+
+      setMilestones(built);
+    } catch (err) {
+      console.error('Error loading learning path', err);
+    } finally {
+      setLoading(false);
+    }
   }, [router]);
+
+  // Load milestones on mount
+  useEffect(() => {
+    loadMilestones();
+  }, [loadMilestones]);
+
+  // Listen for storage changes (when lessons are marked as completed in other tabs or components)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      console.log('Storage changed, reloading milestones...');
+      loadMilestones();
+    };
+
+    // Listen to storage events from other tabs
+    window.addEventListener('storage', handleStorageChange);
+
+    // Also listen for custom events from the same tab (when lessons are marked completed)
+    window.addEventListener('lesson-completed', handleStorageChange);
+    window.addEventListener('course-completed', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('lesson-completed', handleStorageChange);
+      window.removeEventListener('course-completed', handleStorageChange);
+    };
+  }, [loadMilestones]);
 
   const completedCount = milestones.filter((item) => item.status === "completed").length;
   const totalProgress = milestones.length ? Math.round(milestones.reduce((acc, item) => acc + (item.progress ?? 0), 0) / milestones.length) : 0;
@@ -120,59 +164,63 @@ export function LearningPathView() {
   }, [milestones, query]);
 
   return (
-    <div className="flex min-h-screen bg-[#FAFAFA] text-[#264653]">
+    <div className="flex min-h-screen bg-neutral-50 text-[#264653] font-sans">
       <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-5xl p-4 md:p-8 xl:pr-96">
-          <section className="mb-10">
-            <nav className="mb-1 flex gap-2 text-xs font-semibold uppercase tracking-wider text-[#F4A261]/80">
+        <div className="mx-auto w-full max-w-6xl p-4 md:p-8">
+          <section className="mb-10 rounded-3xl border border-[#e5e7eb] bg-white p-8 shadow-sm">
+            <nav className="mb-3 flex gap-2 text-xs font-semibold uppercase tracking-widest text-[#2A9D8F]/80">
               <span>Curso</span>
               <span>/</span>
-              <span className="text-[#264653]">Especializacion</span>
+              <span className="text-[#264653]">Especialización</span>
             </nav>
-            <button
-              onClick={() => router.push("/leaderboard")}
-              className="mt-4 w-full rounded-xl bg-[#F4A261] py-2 font-bold text-white"
-            >
-              Ver Leaderboard
-            </button>
-            <h1 className="text-4xl font-black tracking-tight text-[#264653]">Ruta de Aprendizaje</h1>
-            <p className="mt-2 text-lg text-gray-500">
-              Modulo Activo: <span className="font-semibold text-[#264653]">Sigue la ruta completando cursos</span>
-            </p>
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h1 className="text-4xl font-semibold text-[#264653]">Ruta de Aprendizaje</h1>
+                <p className="mt-2 text-lg leading-relaxed text-[#64748b]">
+                  Cada vez que completes una lección se reflejará en tu hoja de ruta.
+                </p>
+              </div>
+              <button
+                onClick={() => router.push("/leaderboard")}
+                className="inline-flex items-center justify-center rounded-2xl bg-[#F4A261] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#e5983f]"
+              >
+                Ver leaderboard
+              </button>
+            </div>
           </section>
 
           <section className="mb-16 grid grid-cols-1 gap-6 md:grid-cols-3">
             {[
-              ["Racha de Dias", `${Math.max(1, completedCount * 3)} Dias`, "local_fire_department", "#F59E0B", "Sigue asi!"],
+              ["Racha de Días", `${Math.max(1, completedCount * 3)} Días`, "local_fire_department", "#F59E0B", "Sigue así"],
               ["Total XP", `${(completedCount * 3500 + totalProgress * 10).toLocaleString("es-ES")}`, "stars", "#F4A261", "+450 hoy"],
-              ["Progreso", `${completedCount}/${milestones.length}`, "check_circle", "#0D9488", "Lecciones Completadas"],
+              ["Progreso", `${completedCount}/${milestones.length}`, "check_circle", "#0D9488", "Lecciones completadas"],
             ].map(([title, value, icon, iconColor, footer]) => (
               <article
                 key={title}
-                className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                className="rounded-3xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
               >
-                <div className="mb-3 flex items-center justify-between">
-                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">{title}</p>
-                  <div className="rounded-lg bg-gray-50 p-1.5">
+                <div className="mb-4 flex items-center justify-between">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-[#64748b]">{title}</p>
+                  <div className="rounded-2xl bg-[#f8fafc] p-2">
                     <span className="material-symbols-outlined text-xl" style={{ color: iconColor }}>
                       {icon}
                     </span>
                   </div>
                 </div>
-                <p className="text-3xl font-bold text-[#264653]">{value}</p>
-                <p className="mt-1 text-sm font-medium text-[#2A9D8F]">{footer}</p>
+                <p className="text-3xl font-semibold text-[#264653]">{value}</p>
+                <p className="mt-2 text-sm font-medium text-[#2A9D8F]">{footer}</p>
               </article>
             ))}
           </section>
 
           <section className="relative pb-20">
-            <h2 className="mb-16 flex items-center gap-3 text-2xl font-bold text-[#264653]">
-              <span className="h-1 w-8 rounded-full bg-[#F4A261]" />
-              Tu Hoja de Ruta
+            <h2 className="mb-10 flex items-center gap-3 text-2xl font-semibold text-[#264653]">
+              <span className="h-1 w-10 rounded-full bg-[#F4A261]" />
+              Tu hoja de ruta
             </h2>
 
-            <div className="relative flex flex-col items-center gap-20">
-              {loading && <p>Cargando ruta...</p>}
+            <div className="relative flex flex-col items-center gap-16">
+              {loading && <p className="text-[#64748b]">Cargando ruta...</p>}
               {visibleMilestones.map((item, index) => {
                 const isCompleted = item.status === "completed";
                 const isInProgress = item.status === "in-progress";
@@ -183,9 +231,9 @@ export function LearningPathView() {
                     <div
                       className={`flex items-center justify-center rounded-full border-4 border-white ${
                         isInProgress
-                          ? "h-28 w-28 border-[#F4A261] bg-white ring-8 ring-[#F4A261]/5"
+                          ? "h-28 w-28 border-[#F4A261] bg-white ring-8 ring-[#F4A261]/10"
                           : isCompleted
-                            ? "h-20 w-20 bg-[#F4A261] shadow-xl shadow-[#F4A261]/30"
+                            ? "h-20 w-20 bg-[#2A9D8F] shadow-xl shadow-[#2A9D8F]/20"
                             : "h-20 w-20 bg-gray-100 text-gray-400 shadow-inner"
                       }`}
                     >
@@ -195,39 +243,37 @@ export function LearningPathView() {
                     </div>
 
                     <div
-                      className={`absolute top-2 w-64 rounded-xl border bg-white p-4 shadow-sm ${
+                      className={`absolute top-2 w-72 rounded-3xl border bg-white p-5 shadow-sm ${
                         item.side === "left" ? "left-[56%]" : "right-[56%] text-right"
-                      } ${isInProgress ? "rounded-2xl border-2 border-[#F4A261] p-5 shadow-xl" : "border-gray-100"} ${
-                        isLocked ? "opacity-60" : ""
-                      }`}
+                      } ${isInProgress ? "border-[#F4A261] shadow-lg" : "border-[#e5e7eb]"} ${isLocked ? "opacity-70" : ""}`}
                     >
                       <p
-                        className={`mb-1 text-[10px] font-bold uppercase ${
-                          isCompleted || isInProgress ? "text-[#F4A261]" : "text-gray-400"
+                        className={`mb-2 text-[11px] font-bold uppercase tracking-[0.2em] ${
+                          isCompleted || isInProgress ? "text-[#264653]" : "text-gray-400"
                         }`}
                       >
-                        {isInProgress ? "En Progreso" : isCompleted ? "Completado" : "Bloqueado"}
+                        {isInProgress ? "En progreso" : isCompleted ? "Completado" : "Bloqueado"}
                       </p>
                       <p className={`text-sm font-bold leading-tight ${isLocked ? "text-gray-400" : "text-[#264653]"}`}>
                         {item.title}
                       </p>
                       {item.courseTitle ? (
-                        <p className="mt-1 text-[11px] font-semibold text-gray-500">{item.courseTitle}</p>
+                        <p className="mt-2 text-xs font-semibold text-[#64748b]">{item.courseTitle}</p>
                       ) : null}
                       {typeof item.lessonsRemainingInCourse === "number" ? (
-                        <p className="mt-1 text-[11px] font-semibold text-gray-500">
+                        <p className="mt-2 text-xs font-medium text-[#64748b]">
                           {item.lessonsRemainingInCourse} lecciones faltantes en este curso
                         </p>
                       ) : null}
 
                       {isInProgress ? (
                         <>
-                          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-gray-100">
+                          <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-[#e2e8f0]">
                             <div className="h-full rounded-full bg-[#F4A261]" style={{ width: `${item.progress ?? 0}%` }} />
                           </div>
-                          <div className="mt-2 flex items-center justify-between text-[11px] font-bold">
-                            <span className="text-gray-400">Paso 1</span>
-                            <span className="text-[#F4A261]">{item.progress}%</span>
+                          <div className="mt-3 flex items-center justify-between text-[11px] font-bold text-[#64748b]">
+                            <span>Avance</span>
+                            <span>{item.progress}%</span>
                           </div>
                         </>
                       ) : null}
@@ -245,8 +291,8 @@ export function LearningPathView() {
               })}
 
               {visibleMilestones.length === 0 && !loading ? (
-                <p className="rounded-xl bg-white p-4 text-sm font-semibold text-gray-500 shadow-sm">
-                  No encontramos modulos con esa busqueda.
+                <p className="rounded-3xl bg-white p-6 text-sm font-semibold text-[#64748b] shadow-sm">
+                  No encontramos módulos con esa búsqueda.
                 </p>
               ) : null}
             </div>

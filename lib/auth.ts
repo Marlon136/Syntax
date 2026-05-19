@@ -27,7 +27,7 @@ export function clearAuth() {
   localStorage.removeItem(AUTH_EMAIL_KEY);
 }
 
-export function authHeaders() {
+export function authHeaders(): Record<string, string> {
   const token = getAuthToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 }

@@ -1,10 +1,14 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { apiFetch, postJson } from "@/lib/api";
+import { apiFetch } from "@/lib/api";
 import { getAuthEmail, getAuthToken, getEmailFromToken } from "@/lib/auth";
-import { getCompletedCourseSlugs, markCourseCompleted, markLessonCompleted, getCompletedLessonsForCourseSync } from "@/lib/courseCompletion";
+import {
+  getCompletedCourseSlugs,
+  markLessonCompleted,
+  getCompletedLessonsForCourseSync,
+} from "@/lib/courseCompletion";
 import CodeEditor from "@/app/components/premium/CodeEditor";
 
 type Lesson = {
@@ -73,6 +77,7 @@ export default function CourseDetailPage() {
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [code, setCode] = useState<string>("");
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
+  const [completedLessonIds, setCompletedLessonIds] = useState<number[]>([]);
   const [authEmail, setAuthEmail] = useState<string | null>(null);
   const [lessonTitle, setLessonTitle] = useState("");
   const [lessonContent, setLessonContent] = useState("");
@@ -98,6 +103,7 @@ export default function CourseDetailPage() {
     (async () => {
       const completed = await getCompletedCourseSlugs();
       setCompletedCourses(completed);
+      setCompletedLessonIds(getCompletedLessonsForCourseSync(slug));
     })();
     setAuthEmail(getAuthEmail());
     if (!slug) return;
@@ -112,35 +118,6 @@ export default function CourseDetailPage() {
       .catch((err) => setError(err instanceof Error ? err.message : String(err)))
       .finally(() => setLoading(false));
   }, [slug, router]);
-
-  function handleComplete() {
-    if (!slug) return;
-    // Persist completion to server (adds points) and then update local state
-    const token = getAuthToken();
-    if (!token) {
-      router.push('/login');
-      return;
-    }
-
-    (async () => {
-      try {
-        await postJson('/scores', { courseId: course?.id, points: 1000 });
-        // refresh completed courses from server
-        const res = await fetch((process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001') + '/users/me/completed-courses', { headers: { Authorization: `Bearer ${token}` } });
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setCompletedCourses(data);
-          // keep local copy as well
-          data.forEach((s: string) => markCourseCompleted(s));
-        }
-      } catch (err) {
-        console.error('Error marking course complete', err);
-        // fallback to local-only
-        const updated = markCourseCompleted(slug);
-        setCompletedCourses(updated);
-      }
-    })();
-  }
 
   const isCompleted = slug ? completedCourses.includes(slug) : false;
   const effectiveEmail = (authEmail ?? getAuthEmail() ?? getEmailFromToken())?.toLowerCase().trim();
@@ -227,52 +204,29 @@ export default function CourseDetailPage() {
                   </div>
                     </div>
                     <div className="mt-3 flex gap-3">
-                        <button
-                          onClick={async () => {
-                            if (!course || !selectedLesson) return;
-                            const result = await markLessonCompleted(course.id, slug, selectedLesson.id, course.lessons.length);
-                            if (result.completed) {
-                              // refresh completed courses list from server if possible
-                              const token = getAuthToken();
-                              if (token) {
-                                try {
-                                  const api = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
-                                  const res = await fetch(`${api}/users/me/completed-courses`, { headers: { Authorization: `Bearer ${token}` } });
-                                  const data = await res.json();
-                                  if (Array.isArray(data)) setCompletedCourses(data);
-                                } catch (err) {
-                                  // fallback to local
-                                  setCompletedCourses(markCourseCompleted(slug));
-                                }
-                              } else {
-                                setCompletedCourses(markCourseCompleted(slug));
-                              }
-                            }
-                          }}
-                          className="rounded-2xl bg-[#F4A261] px-4 py-2 text-sm font-bold text-white"
-                        >
-                          Marcar lección completada
-                        </button>
-                      <div className="ml-auto text-sm text-gray-500">
-                        {course ? `${course.lessons.length - getCompletedLessonsForCourseSync(slug).length} lecciones restantes` : ''}
+                      <button
+                        onClick={async () => {
+                          if (!course || !selectedLesson) return;
+                          const result = await markLessonCompleted(course.id, slug, selectedLesson.id, course.lessons.length);
+                          setCompletedLessonIds(getCompletedLessonsForCourseSync(slug));
+                          if (result.completed) {
+                            const refreshed = await getCompletedCourseSlugs();
+                            setCompletedCourses(refreshed);
+                            router.refresh();
+                          }
+                        }}
+                        disabled={!course || !selectedLesson || completedLessonIds.includes(selectedLesson?.id ?? -1)}
+                        className="rounded-2xl bg-[#2a4d60] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#47a599] disabled:cursor-not-allowed disabled:bg-[#94d3c2]"
+                      >
+                        {completedLessonIds.includes(selectedLesson?.id ?? -1)
+                          ? "Lección completada"
+                          : "Completar lección"}
+                      </button>
+                      <div className="ml-auto text-sm text-[#64748b]">
+                        {course ? `${course.lessons.length - completedLessonIds.length} lecciones restantes` : ''}
                       </div>
                     </div>
                 {/* Lesson creation removed from course page. Use admin interface. */}
-
-                <div className="flex flex-wrap gap-3">
-                  <button
-                    onClick={handleComplete}
-                    className="rounded-2xl bg-[#2a4d60] px-6 py-3 text-white transition hover:bg-[#47a599]"
-                  >
-                    Marcar curso completado
-                  </button>
-                  <button
-                    onClick={() => alert('Tu código se guardó localmente en este editor.')}
-                    className="rounded-2xl border border-[#264653] px-6 py-3 text-[#264653] transition hover:bg-[#f0e8d8]"
-                  >
-                    Guardar ejercicio
-                  </button>
-                </div>
               </div>
             </div>
           </div>

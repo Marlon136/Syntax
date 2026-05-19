@@ -63,9 +63,9 @@ export function getCompletedLessonsSync(): Record<string, number[]> {
   }
 }
 
-export function getCompletedLessonsForCourseSync(slug: string): number[] {
+export function getCompletedLessonsForCourseSync(slugOrKey: string): number[] {
   const map = getCompletedLessonsSync();
-  return Array.isArray(map[slug]) ? map[slug] : [];
+  return Array.isArray(map[slugOrKey]) ? map[slugOrKey] : [];
 }
 
 export function saveCompletedLessonsMap(map: Record<string, number[]>) {
@@ -80,15 +80,39 @@ export function saveCompletedLessonsMap(map: Record<string, number[]>) {
 export async function markLessonCompleted(courseId: number, slug: string, lessonId: number, totalLessons: number, points = 1000) {
   // Update local storage
   const map = getCompletedLessonsSync();
-  const list = new Set<number>(Array.isArray(map[slug]) ? map[slug] : []);
+  const key = slug || String(courseId);
+  const list = new Set<number>(Array.isArray(map[key]) ? map[key] : []);
   list.add(lessonId);
-  map[slug] = Array.from(list);
+  map[key] = Array.from(list);
+
+  // Keep a fallback key by courseId so path rendering can match both slug and id-based keys.
+  const idKey = String(courseId);
+  if (key !== idKey) {
+    map[idKey] = map[key];
+  }
+
   saveCompletedLessonsMap(map);
+
+  // Dispatch event to notify other components of lesson completion
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('lesson-completed', { 
+      detail: { courseId, slug, lessonId } 
+    }));
+    window.dispatchEvent(new Event('lesson-completed'));
+  }
 
   // If all lessons completed, mark course completed and persist to server if authenticated
   if (map[slug].length >= totalLessons) {
     // mark locally
     markCourseCompleted(slug);
+
+    // Dispatch event for course completion
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('course-completed', { 
+        detail: { courseId, slug } 
+      }));
+      window.dispatchEvent(new Event('course-completed'));
+    }
 
     const token = getAuthToken();
     if (!token) return { completed: true, synced: false };
