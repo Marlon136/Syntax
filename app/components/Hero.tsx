@@ -16,7 +16,7 @@ export default function Hero() {
       <div className="max-w-xl w-full mt-8 md:mt-0">
 
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-[#2a4d60]">
-          {t("hero.title")}
+          {t("hero.title.prefix")} <span className="text-[#2a4d60]">Sy</span><span className="text-[#47a599]">n</span><span className="text-[#ffbe19]">t</span><span className="text-[#E76F51]">aX</span>
         </h1>
 
         <p className="text-[#264653]/80 mb-6 text-base sm:text-lg">
