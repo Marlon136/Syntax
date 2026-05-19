@@ -145,4 +145,10 @@ body {
   html {
     @apply font-sans;
   }
+  button {
+    transition: background-color 0.15s ease, color 0.15s ease, filter 0.15s ease;
+  }
+  button:active {
+    filter: brightness(0.92);
+  }
 }

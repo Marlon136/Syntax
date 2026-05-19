@@ -16,7 +16,7 @@ export default function Hero() {
       <div className="max-w-xl w-full mt-8 md:mt-0">
 
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-[#2a4d60]">
-          Master <span className="text-[#E76F51]">Java</span> & Beyond with Syntax
+          Master <span className="text-[#E76F51]">Java</span><span className="text-[#ffbe19]"> & </span><span className="text-[#47a599]"> Be</span>yond with Syntax
         </h1>
 
         <p className="text-[#264653]/80 mb-6 text-base sm:text-lg">
@@ -44,9 +44,9 @@ export default function Hero() {
       <Image
         src="/homeimaage.jpg"
         alt="code"
-        width={600}
-        height={200}
-        className="w-[280px] sm:w-[380px] md:w-[480px] lg:w-[600px] h-[180px] sm:h-[220px] md:h-[250px] object-cover rounded-xl shadow"
+        width={720}
+        height={320}
+        className="w-[320px] sm:w-[440px] md:w-[620px] lg:w-[720px] h-[220px] sm:h-[260px] md:h-[320px] object-cover rounded-xl shadow"
       />
 
     </section>

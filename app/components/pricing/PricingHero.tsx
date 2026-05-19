@@ -26,7 +26,8 @@ export default function PricingHero() {
           Unlock Your Full Potential with
           <span className="text-[#2a4d60]"> Sy</span> 
           <span className="text-[#47a599]">n</span> 
-          <span className="text-[#E76F51]">taX Pro</span>
+          <span className="text-[#ffbe19]">t</span> 
+          <span className="text-[#E76F51]">aX Pro</span>
         </h1>
 
         <p className="text-[#2a4d60]/80 mb-6">

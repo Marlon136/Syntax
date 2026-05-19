@@ -13,11 +13,8 @@ export class AuthController {
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     console.log('[auth] POST /auth/register -', createUserDto.email);
-    return this.authService.register(
-      createUserDto.email,
-      createUserDto.password,
-      createUserDto.name,
-    );
+    // forward full DTO to auth service so it can persist extra fields
+    return this.authService.register(createUserDto);
   }
 
   @Post('login')

@@ -74,7 +74,7 @@ export default function Plans() {
 
           <button
             onClick={() => checkout()}
-            className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
+            className="mt-4 w-full bg-[#ffbe19] hover:bg-[#47a599] text-[#2a4d60] py-2 rounded"
           >
             {t("plans.getPlan")}
           </button>
@@ -95,7 +95,7 @@ export default function Plans() {
 
           <button
             onClick={() => checkout("python")}
-            className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
+            className="mt-4 w-full bg-[#ffbe19] hover:bg-[#47a599] text-[#2a4d60] py-2 rounded"
           >
             {t("plans.getPlan")}
           </button>
@@ -116,7 +116,7 @@ export default function Plans() {
 
           <button
             onClick={() => checkout("js")}
-            className="mt-4 w-full bg-[#f0a262] hover:bg-[#47a599] text-white py-2 rounded"
+            className="mt-4 w-full bg-[#ffbe19] hover:bg-[#47a599] text-[#2a4d60] py-2 rounded"
           >
             {t("plans.getPlan")}
           </button>

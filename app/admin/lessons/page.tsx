@@ -84,7 +84,7 @@ export default function AdminLessonsPage() {
           {message && <p className="text-green-600">{message}</p>}
 
           <div>
-            <button className="bg-[#2a9d8f] text-white px-4 py-2 rounded">Crear lección</button>
+            <button className="bg-[#2a4d60] text-white px-4 py-2 rounded transition hover:bg-[#47a599]">Crear lección</button>
           </div>
         </form>
       </div>

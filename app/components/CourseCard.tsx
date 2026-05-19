@@ -95,15 +95,7 @@ export default function CourseCard({
             <button
               type="button"
               onClick={() => setFlipped(true)}
-              style={{
-                width: "100%",
-                background: "#47a599",
-                color: "white",
-                padding: "10px",
-                borderRadius: "8px",
-                border: "none",
-                cursor: "pointer",
-              }}
+              className="w-full rounded-lg bg-[#2a4d60] px-4 py-2 text-white transition hover:bg-[#47a599]"
             >
               {moreInfoLabel}
             </button>
@@ -142,16 +134,7 @@ export default function CourseCard({
 
           <button
             onClick={() => setFlipped(false)}
-            style={{
-              marginTop: "20px",
-              width: "100%",
-              background: "#47a599",
-              color: "white",
-              padding: "10px",
-              borderRadius: "8px",
-              border: "#47a599",
-              cursor: "pointer",
-            }}
+            className="mt-5 w-full rounded-lg bg-[#2a4d60] px-4 py-2 text-white transition hover:bg-[#47a599]"
           >
             {t("courseCard.back")}
           </button>

@@ -79,6 +79,7 @@ export default function CourseDetailPage() {
   const [lessonOrder, setLessonOrder] = useState(1);
   const [formError, setFormError] = useState<string | null>(null);
   const [formMessage, setFormMessage] = useState<string | null>(null);
+  
   const slug = params.slug as string;
   const editorLanguage = slug.includes("python")
     ? "python"
@@ -145,44 +146,7 @@ export default function CourseDetailPage() {
   const effectiveEmail = (authEmail ?? getAuthEmail() ?? getEmailFromToken())?.toLowerCase().trim();
   const isMarlon = effectiveEmail === 'marlon@gmail.com';
 
-  async function handleCreateLesson(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setFormError(null);
-    setFormMessage(null);
-
-    if (!slug) {
-      setFormError('No se encontró el curso.');
-      return;
-    }
-
-    if (!lessonTitle.trim() || !lessonContent.trim()) {
-      setFormError('Completa título y enunciado antes de guardar.');
-      return;
-    }
-
-    try {
-      const created = await postJson<Lesson>(`/courses/${slug}/lessons`, {
-        title: lessonTitle,
-        content: lessonContent,
-        order: Number(lessonOrder) || undefined,
-      });
-
-      setCourse((current) =>
-        current
-          ? {
-              ...current,
-              lessons: [...current.lessons, created],
-            }
-          : current,
-      );
-      setLessonTitle('');
-      setLessonContent('');
-      setLessonOrder((course?.lessons.length || 0) + 2);
-      setFormMessage('Lección creada correctamente.');
-    } catch (err) {
-      setFormError(err instanceof Error ? err.message : 'Error al crear la lección.');
-    }
-  }
+  // Lesson creation removed from course page. Use admin interface.
 
   return (
     <div className="p-5">
@@ -263,89 +227,42 @@ export default function CourseDetailPage() {
                   </div>
                     </div>
                     <div className="mt-3 flex gap-3">
-                      <button
-                        onClick={async () => {
-                          if (!course || !selectedLesson) return;
-                          const result = await markLessonCompleted(course.id, slug, selectedLesson.id, course.lessons.length);
-                          if (result.completed) {
-                            // refresh completed courses list from server if possible
-                            const token = getAuthToken();
-                            if (token) {
-                              try {
-                                const api = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
-                                const res = await fetch(`${api}/users/me/completed-courses`, { headers: { Authorization: `Bearer ${token}` } });
-                                const data = await res.json();
-                                if (Array.isArray(data)) setCompletedCourses(data);
-                              } catch (err) {
-                                // fallback to local
+                        <button
+                          onClick={async () => {
+                            if (!course || !selectedLesson) return;
+                            const result = await markLessonCompleted(course.id, slug, selectedLesson.id, course.lessons.length);
+                            if (result.completed) {
+                              // refresh completed courses list from server if possible
+                              const token = getAuthToken();
+                              if (token) {
+                                try {
+                                  const api = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+                                  const res = await fetch(`${api}/users/me/completed-courses`, { headers: { Authorization: `Bearer ${token}` } });
+                                  const data = await res.json();
+                                  if (Array.isArray(data)) setCompletedCourses(data);
+                                } catch (err) {
+                                  // fallback to local
+                                  setCompletedCourses(markCourseCompleted(slug));
+                                }
+                              } else {
                                 setCompletedCourses(markCourseCompleted(slug));
                               }
-                            } else {
-                              setCompletedCourses(markCourseCompleted(slug));
                             }
-                          }
-                        }}
-                        className="rounded-2xl bg-[#F4A261] px-4 py-2 text-sm font-bold text-white"
-                      >
-                        Marcar lección completada
-                      </button>
+                          }}
+                          className="rounded-2xl bg-[#F4A261] px-4 py-2 text-sm font-bold text-white"
+                        >
+                          Marcar lección completada
+                        </button>
                       <div className="ml-auto text-sm text-gray-500">
                         {course ? `${course.lessons.length - getCompletedLessonsForCourseSync(slug).length} lecciones restantes` : ''}
                       </div>
                     </div>
-                {isMarlon && (
-                  <div className="rounded-2xl border border-[#264653]/20 bg-white p-5">
-                    <h3 className="mb-4 text-xl font-semibold text-[#264653]">Crear nueva lección</h3>
-                    <form onSubmit={handleCreateLesson} className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-[#264653]">Título de la lección</label>
-                        <input
-                          value={lessonTitle}
-                          onChange={(event) => setLessonTitle(event.target.value)}
-                          className="mt-2 w-full rounded-lg border px-4 py-3 outline-none focus:border-[#264653] focus:ring-2 focus:ring-[#264653]/20"
-                          placeholder="Por ejemplo: Bucles en JavaScript"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#264653]">Enunciado</label>
-                        <textarea
-                          value={lessonContent}
-                          onChange={(event) => setLessonContent(event.target.value)}
-                          className="mt-2 w-full min-h-[120px] rounded-lg border px-4 py-3 outline-none focus:border-[#264653] focus:ring-2 focus:ring-[#264653]/20"
-                          placeholder="Describe qué debe resolver el estudiante"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#264653]">Orden</label>
-                        <input
-                          type="number"
-                          min={1}
-                          value={lessonOrder}
-                          onChange={(event) => setLessonOrder(Number(event.target.value))}
-                          className="mt-2 w-full rounded-lg border px-4 py-3 outline-none focus:border-[#264653] focus:ring-2 focus:ring-[#264653]/20"
-                        />
-                      </div>
-                      {formError && <p className="text-sm text-red-500">{formError}</p>}
-                      {formMessage && <p className="text-sm text-[#2a9d8f]">{formMessage}</p>}
-                      <button
-                        type="submit"
-                        className="rounded-2xl bg-[#2a9d8f] px-6 py-3 text-white hover:bg-[#23825c]"
-                      >
-                        Guardar lección
-                      </button>
-                    </form>
-                  </div>
-                )}
-                {!isMarlon && authEmail && (
-                  <div className="rounded-2xl border border-[#e76f51]/20 bg-[#fff1f0] p-4 text-[#9b2c2c]">
-                    Solo el usuario <strong>Marlon@gmail.com</strong> puede crear lecciones desde aquí.
-                  </div>
-                )}
+                {/* Lesson creation removed from course page. Use admin interface. */}
 
                 <div className="flex flex-wrap gap-3">
                   <button
                     onClick={handleComplete}
-                    className="rounded-2xl bg-[#2a9d8f] px-6 py-3 text-white transition hover:bg-[#23825c]"
+                    className="rounded-2xl bg-[#2a4d60] px-6 py-3 text-white transition hover:bg-[#47a599]"
                   >
                     Marcar curso completado
                   </button>

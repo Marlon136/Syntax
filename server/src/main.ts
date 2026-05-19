@@ -11,10 +11,13 @@ async function bootstrap() {
   // increase default body size limits to allow image data URLs
   app.use(bodyParser.json({ limit: '5mb' }));
   app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
-  app.enableCors({ origin: true, credentials: true });
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
   const configService = app.get(ConfigService);
+  const frontendUrl = configService.get<string>('FRONTEND_URL') || configService.get<string>('APP_URL') || 'http://localhost:3000';
+  const allowedOrigins = frontendUrl.split(',').map((origin) => origin.trim());
+  app.enableCors({ origin: allowedOrigins, credentials: true });
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
   const port = configService.get<number>('PORT') || 3001;
 
   await app.listen(port);

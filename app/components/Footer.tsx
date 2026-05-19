@@ -10,13 +10,13 @@ export default function Footer() {
       <div className="grid grid-cols-4 gap-6">
 
         <div>
-          <p className="font-bold text-[#f0a262]">{t('footer.brand') || 'This is SyntaX'}</p>
+          <p className="font-bold text-[#E76F51]">{t('footer.brand') || 'This is SyntaX'}</p>
           <p>{t('footer.platform') || 'Learning platform'}</p>
           <p>{t('footer.progress') || 'Progress traking'}</p>
         </div>
 
         <div>
-          <p className="font-bold text-[#f0a262]">{t('footer.connect') || 'Connect with us'}</p>
+          <p className="font-bold text-[#ffbe19]">{t('footer.connect') || 'Connect with us'}</p>
           <p>Instagram</p>
           <p>Twitter</p>
           <p>GitHub</p>

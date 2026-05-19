@@ -112,7 +112,7 @@ export function LoginView() {
 
               <Sparkles size={16} />
 
-              Daily streak: 0
+              Lets get started!
 
             </div>
 
@@ -246,7 +246,7 @@ export function LoginView() {
 
             <button
               disabled={isSubmitting}
-              className="w-full bg-[#F4A261] text-[#264653] font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:opacity-90"
+              className="w-full bg-[#ffbe19] text-[#264653] font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:opacity-90"
             >
 
               {isSubmitting

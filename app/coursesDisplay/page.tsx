@@ -65,20 +65,28 @@ export default function CoursesDisplay() {
 
         {!loading && !error && (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {courses.map((course) => {
-              const slug = course.slug.toLowerCase();
-              const img = slug.includes("javascript") || slug.includes("js") ? "/jsh.jpg" : slug.includes("python") ? "/Py.jpg" : "/Java.jpg";
-              return (
-                <CourseListCard
-                  key={course.id}
-                  slug={course.slug}
-                  title={course.title}
-                  lessons={`${course.lessons.length} lecciones`}
-                  img={img}
-                  completed={completedCourses.includes(course.slug)}
-                />
-              );
-            })}
+            {[...courses]
+              .sort((a, b) => {
+                const aSlug = a.slug.toLowerCase();
+                const bSlug = b.slug.toLowerCase();
+                if (aSlug.includes("python") && !bSlug.includes("python")) return -1;
+                if (!aSlug.includes("python") && bSlug.includes("python")) return 1;
+                return 0;
+              })
+              .map((course) => {
+                const slug = course.slug.toLowerCase();
+                const img = slug.includes("javascript") || slug.includes("js") ? "/jsh.jpg" : slug.includes("python") ? "/Py.jpg" : "/Java.jpg";
+                return (
+                  <CourseListCard
+                    key={course.id}
+                    slug={course.slug}
+                    title={course.title}
+                    lessons={`${course.lessons.length} lecciones`}
+                    img={img}
+                    completed={completedCourses.includes(course.slug)}
+                  />
+                );
+              })}
           </div>
         )}
       </div>

@@ -14,8 +14,12 @@ export function RegisterView() {
   const { t } = useLanguage();
 
   const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [country, setCountry] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,15 +46,37 @@ export function RegisterView() {
       return;
     }
 
+    if (!lastName) {
+      setError("Ingresa tu apellido");
+      return;
+    }
+
+    if (!country) {
+      setError("Selecciona tu país");
+      return;
+    }
+
+    if (!birthDate) {
+      setError("Ingresa tu fecha de nacimiento");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Las contraseñas no coinciden");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const result = await postJson<{ access_token: string; user: { email: string } }>(
         "/auth/register",
         {
-          name: name || undefined,
+          name: `${name} ${lastName}` || undefined,
           email,
           password,
+          country: country || undefined,
+          birthDate: birthDate || undefined,
         }
       );
 
@@ -80,46 +106,90 @@ export function RegisterView() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="text-sm font-semibold">Nombre</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Tu nombre"
-                className="w-full mt-1 p-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-[#2A9D8F]/20 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-semibold">Correo</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="dev@syntax.io"
-                className="w-full mt-1 p-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-[#2A9D8F]/20 outline-none"
-              />
-            </div>
-
-            <div>
-              <div className="flex justify-between text-sm mb-1">
-                <label className="font-semibold">Contraseña</label>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="text-sm font-semibold">Nombre</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Tu nombre"
+                  className="w-full mt-1 p-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-[#2A9D8F]/20 outline-none"
+                />
               </div>
-              <div className="relative">
+
+              <div>
+                <label className="text-sm font-semibold">Apellido</label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Tu apellido"
+                  className="w-full mt-1 p-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-[#2A9D8F]/20 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-semibold">País</label>
+                <input
+                  type="text"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  placeholder="País"
+                  className="w-full mt-1 p-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-[#2A9D8F]/20 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-semibold">Fecha de nacimiento</label>
+                <input
+                  type="date"
+                  value={birthDate}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                  className="w-full mt-1 p-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-[#2A9D8F]/20 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-semibold">Correo</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="dev@syntax.io"
+                  className="w-full mt-1 p-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-[#2A9D8F]/20 outline-none"
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <label className="font-semibold">Contraseña</label>
+                </div>
+                <div className="relative">
+                  <input
+                    type={isPasswordVisible ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full p-3 rounded-lg border bg-gray-50 pr-10 outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setIsPasswordVisible((v) => !v)}
+                    className="absolute right-3 top-3 text-gray-500 hover:text-[#2A9D8F]"
+                  >
+                    {isPasswordVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-semibold">Confirmar contraseña</label>
                 <input
                   type={isPasswordVisible ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full p-3 rounded-lg border bg-gray-50 pr-10 outline-none"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full mt-1 p-3 rounded-lg border bg-gray-50 pr-10 outline-none"
                 />
-                <button
-                  type="button"
-                  onClick={() => setIsPasswordVisible((v) => !v)}
-                  className="absolute right-3 top-3 text-gray-500 hover:text-[#2A9D8F]"
-                >
-                  {isPasswordVisible ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
               </div>
             </div>
 
@@ -128,7 +198,7 @@ export function RegisterView() {
 
             <button
               disabled={isSubmitting}
-              className="w-full bg-[#F4A261] text-[#264653] font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:opacity-90"
+              className="w-full bg-[#ffbe19] text-[#264653] font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:opacity-90"
             >
               {isSubmitting ? "Creando cuenta..." : "Crear cuenta"}
             </button>

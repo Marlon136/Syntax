@@ -26,7 +26,7 @@ export default function CourseListCard({
       <div className="mt-5 space-y-3">
         <div className="flex items-center justify-between gap-3">
           <h3 className="text-xl font-semibold text-[#264653]">{title}</h3>
-          <span className={completed ? "rounded-full bg-[#2a9d8f] px-3 py-1 text-xs text-white" : "rounded-full bg-[#e76f51] px-3 py-1 text-xs text-white"}>
+          <span className={completed ? "rounded-full bg-[#2a9d8f] px-3 py-1 text-xs text-white" : "rounded-full bg-[#ffbe19] px-3 py-1 text-xs font-semibold text-[#264653]"}>
             {completed ? "Completado" : "Nuevo"}
           </span>
         </div>
@@ -34,7 +34,7 @@ export default function CourseListCard({
         <button
           type="button"
           onClick={() => router.push(`/coursesDisplay/${slug}`)}
-          className="mt-4 inline-flex w-full justify-center rounded-2xl bg-[#264653] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#1f3743]"
+          className="mt-4 inline-flex w-full justify-center rounded-2xl bg-[#2a4d60] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#47a599]"
         >
           Ver curso
         </button>

@@ -98,7 +98,8 @@ export default function Navbar() {
           className="text-2xl sm:text-3xl font-bold text-[#2a4d60] cursor-pointer"
         >
           Sy<span className="text-[#47a599]">n</span>
-          <span className="text-[#E76F51]">taX</span>
+          <span className="text-[#ffbe19]">t</span>
+          <span className="text-[#E76F51]">aX</span>
         </div>
 
 
@@ -166,18 +167,18 @@ export default function Navbar() {
             )}
             {user?.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <button onClick={() => setProfileOpen(true)} className="w-10 h-10 rounded-full overflow-hidden">
+              <button onClick={() => setProfileOpen(true)} className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-[#ffbe19]">
                 <img src={user.avatarUrl} alt="avatar" className="w-full h-full object-cover" />
               </button>
             ) : (
-              <button onClick={() => setProfileOpen(true)} className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                <span className="text-sm text-[#264653]">{(user?.name || email || 'U')[0]}</span>
+              <button onClick={() => setProfileOpen(true)} className="w-10 h-10 rounded-full bg-[#ffbe19] flex items-center justify-center">
+                <span className="text-sm font-semibold text-[#264653]">{(user?.name || email || 'U')[0]}</span>
               </button>
             )}
 
             <button
               onClick={logout}
-              className="bg-[#264653] text-white px-4 py-2 rounded-lg"
+              className="bg-[#2a4d60] text-white px-4 py-2 rounded-lg transition hover:bg-[#47a599]"
             >
               {t('nav.logout')}
             </button>
