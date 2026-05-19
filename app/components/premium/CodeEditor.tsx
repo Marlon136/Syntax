@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Editor from "@monaco-editor/react";
 
 export default function CodeEditor({
@@ -8,7 +9,7 @@ export default function CodeEditor({
   language,
 }: {
   code: string;
-  setCode: (v: string) => void;
+  setCode: React.Dispatch<React.SetStateAction<string>>;
   language?: string;
 }) {
   return (

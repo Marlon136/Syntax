@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Lesson } from "./PremiumContent";
 import CodeEditor from "./CodeEditor";
 
@@ -10,7 +11,7 @@ export default function LessonViewer({
 }: {
   lesson: Lesson;
   code: string;
-  setCode: (v: string) => void;
+  setCode: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
     <div className="bg-white p-6 rounded-xl border">
